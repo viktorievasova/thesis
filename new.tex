@@ -1,0 +1,127 @@
+\documentclass[12pt]{article}
+
+\usepackage{color} 
+\usepackage{verbatim}
+\usepackage{moreverb}
+\usepackage{framed} 
+\usepackage[usenames,dvipsnames]{xcolor}
+\let\verbatiminput=\verbatimtabinput
+
+% makra pro psani poznamek Viktorce 
+\newcommand{\lm}[1]{\textcolor{OliveGreen}{\begin{framed}#1\end{framed}}}
+\newcommand{\lmv}[1]{\textit{\textcolor{OliveGreen}{(#1)}}}
+
+% makra pro formatovani textu 
+\newcommand{\stype}[1]{\texttt{#1}}
+\newcommand{\sfunc}[1]{\underline{\texttt{#1}}}
+
+% zkratky 
+\def\jcv{JavaCV}
+
+\begin{document}
+	\title{Seminar work -- 3D correspondence} % note: pomlcka se pise jako --, ne jen -
+	\author{Viktorie V\'{a}\v{s}ov\'{a}}
+	\date{26th September 2012}
+	
+	\maketitle
+	
+	\section{Introduction}
+	The correspondence problem is an important task of Computer Vision. \lmv{Tahle veta je takova skolacka. Bez zduvodneni toho, proc je to dulezite, to vypada spatne. Idealni je doplnit odstavec komentarem a odkazy na predchozi vyzkum.}
+	The goal of this problem is to match corresponding parts of two or more images of the same scene or subject, each taken from a different viewpoint. 
+	The solution of this problem is often necessary in order to perform more complex tasks, e.g. match~moving, 3D scene reconstruction or photogrammetry.  
+	% Usually it leads to the solving of other greater problems, for example 3D visualization of a scene.
+	
+	\section{Programming Languages and Libraries}
+	\lm{Tuhle sekci bychom meli napsat systematicteji. Michame tam ted dohromady high-level zalezitosti jako kterou knihovnu bude nutne pouzit, co nabizi a pomoci jake technologie ji zpristupnit v tom kterem jazyku a pak low-level detaily o tom, ze je nutne nekde right-clicknout pri instalaci. Chapu, ze v tuhle chvili se to pise spatne, protoze zatim vicemene mame skoro jen jednu knihovnu, kterou potrebujem pouzit, ale pred psani je vzdycky dobre se nejdriv zamyslet nad tim, kam smerujeme.}
+	% For my work I use a library for computer vision called OpenCV (Open Source Computer Vision). 
+	In this work, we use the OpenCV library, which provides us with routines to perform XXX \lmv{idealne napsat, co knihovna nabizi jako seznam}. 
+	Support for C, C++, Python and the Android platform is included in the library. 
+	However, the library itself lacks support for pure Java \lmv{tady prosim over, ze tohle je korektni veta, protoze OpenCV poskytuje OpenCV4Android, o cemz by nekdo mohl prohlasit, ze to je podpora pro Javu; nektere hlasky v dokumentaci vypadaji, jako ze to z normalni Javy skutecne jde volat; otazka je, jak to je otestovane}. 
+	A 3rd party wrapper called JavaCV is available, offering bindings of OpenCV functions using JavaCPP/JNI \lmv{precti si neco malo o JNI}. 
+	It also provides access to several other useful libraries often applied in the field of Computer Vision, e.g. FFmpeg or OpenKinect \lmv{sem je mozne pridat reference}. 
+	An implementation of Java SE (Standard Edition) 6 or 7 has to be installed to use JavaCV on your computer. Another requirement to run JavaCV is an installation of OpenCV. 
+Afterwards, it is needed to locate JAR files of JavaCV somewhere in the classpath  
+and add them to the current project (in NetBeans right-click the {\itshape Libraries} node in the {\itshape Projects} window, click {\itshape Add JAR/Folder...}, select JAR files and insert them).
+	\lm{Nize uvedeny odstavec ctenari nerika nic hodnotneho, az zcasti na posledni vetu.} 
+	There are many tutorials available to learn how to use OpenCV. But getting started with JavaCV is little bit more complicated. On the Internet it is easy to find some examples of code in JavaCV, but I haven't found any lectures or instructions to help understanding it. On the other hand, commands of OpenCV and JavaCV are very similar and it is good to start with studying JavaCV examples comparing to OpenCV functions. 
+
+	 OpenCV offers some structures that are helpful. \lmv{helpful asi neni uplne nejlepsi slovo} {\itshape IplImage} and {\itshape CvMat} are structures used to store images and matrices, others are for example {\itshape CvPoint} or {\itshape CvScalar}. 
+	 It is also possible to transform \stype{IplImage} \lmv{bylo by dobre nejakym \LaTeX ovym makrem obalit vsechny nazvy typu, abychom to mohli hezky vysazet jinym fontem} to \stype{CvMat} by calling a method \sfunc{asMat} on \stype{IplImage}.
+	 \lm{Nasledujici odstavec uz je lepsi, ale idealnejsi by bylo to udelat jako seznam.} 
+	 For working with images, there are two important classes in JavaCV. The class {\itshape com.googlecode.javacv.cpp.opencv\textunderscore highgui.class} provides methods for loading, saving and displaying photos, while {\itshape com.googlecode.javacv.cpp.opencv\textunderscore imgproc.class} offers functions to transform them, e.g. the method \sfunc{cvSmooth} which blurs the picture.
+	 
+	 Another advantage of \jcv\ is the possibility of using a web camera. There exists OpenCVFrameGrabber.class that is essential to take a picture through the web cam and assign it as IplImage. \lmv{Zacinat vety ``There exists'' neni stylysticky moc hezke.} 
+	
+	\section{Feature descriptors}
+	As I have indicated in the {\itshape Introduction} \lmv{ich forma se ve vedeckem textu temer nikdy nepouziva}, the hardest part of solving 3D correspondence problem \lmv{tohle budeme muset prepsat}, is to find the most suitable way how to match corresponding parts. 
+	Several feature descriptors have been introduced in the literature. 
+	% For this reason there exist some feature descriptors.
+	
+	The simplest feature descriptor is based on comparing colors. Once the compared photographs are taken from the same height without rotating camera (that means that the camera is only shifted to the side), we collate every pixel of the first image with every pixel located at the corresponding row of the second picture and pick a pixel with the closest RGB color value as possible. \lmv{Trivialni deskriptor je mozne pouzit i pokud fotografie nejsou snimane dvojici kamer v tehle specificke konfiguraci. Neni duvod michat popis trivialniho deskriptoru a nasimi predpoklady o scene.}
+	
+	From the other descriptors I can introduce the SIFT descriptor (Scale-invariant feature transform). When there are images of different scales and rotations, comparing colors is not the appropriate method. In that case something more sophisticated is needed. 
+	
+	The first step is to create a scale space using Gaussian Blur. From the original image we generate progressively more and more blurred images. Then, both image dimensions are halved by downsampling. We repeatedly generate more and more blurred images again and keep repeating this process. \lmv{V plne verzi bakalarky bychom asi chteli nejaky example obrazek.} Once we have the scale space, we can detect key points. They are defined as maxima and minima of the difference of two blurred images chosen from the scale space. Features with low contrast or features along an edge are bad key points \lmv{proc jsou spatne?} and need to be discarded.
+	
+	Now we have to assign an orientation and size for each key point. We use a small region around the point to get its gradients and build a histogram, so the most prominent gradient orientation are identified. We use this histogram as a descriptor. The last step is to match the most similar key points between the two images. \lmv{Nematchuji se keypointy, ale deskriptory keypointu. Matchovani bych kazdopadne popsal az nekde zvlast.} 
+	
+	\section{3dCorrespondence.java}
+	I would like to give you a detailed outline how to make a simple program of 3D correspondence in Java, specifically how to load images and work with them afterwards. After downloading and installing JavaCV as I have described in the section {\itshape Programming languages and libraries} \lmv{odkazy na kapitoly se delaji pomoci \LaTeX ovych prikazu label a ref}, create a new project in one of integrated development environments (I used NetBeans) and add the JAR files to the library (it is also described above).
+	
+	% creating GUI
+	First of all I created a simple graphical user interface to simplify the file selection. For this, Java widget toolkit Swing is needed, so it is necessary to import it. By extending JFrame from this library, I constructed my own class representing a frame with two buttons for selecting pictures, labels with their paths and an execution button launching the calculation of 3D correspondence. 
+	
+	% uploading pictures, methods 
+	Next step was to write {\itshape Action Listeners} for each button. The two file-loading buttons need the same Listener. By creating new {\itshape JFileChooser} it is easy for us to get a path of chosen file and for the user it is a comfortable way how to browse folders to pick one. Once both pictures are selected, we assign their paths to public variables, because we will need them in other methods soon. 	
+	
+	For the {\itshape Action Listener} of "start button" JavaCV starts to be helpful. We would like to work with pictures selected by the user. Until here we work only with paths of files, but we need them to be actually loaded. Now we exploit the paths received from the file chooser. As it can be seen in the example below, I named the Action Listener {\itshape startCalculating} and used a method of JavaCV library {\itshape cvLoadImage} with one parameter that is a path of an image we would like to load. Like this we call the method twice for both of our paths from the previous step and we get two {\itshape IplImage} variables containing images chosen by the user.
+
+	\begin{verbatim}
+private static String filename1;
+private static String filename2;
+
+static class startCalculating implements ActionListener{
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+    		IplImage img1 = cvLoadImage(filename1);
+    		IplImage img2 = cvLoadImage(filename2);	
+    		
+    		...
+}
+	\end{verbatim}
+	
+	At this moment the mesh for the calculation needs to be built. Because Java Standard Edition does not have any appropriate class for working with graphs, I have tried to find some. There is a free library available on the web site {\itshape http://www.jgrapht.org}. It provides objects of graph-theory and some useful algorithms (for our solution an algorithm for maximum flow or minimum cut is required).
+	
+	Thanks to a class {\itshape SimpleWeightedGraph} of this library, it is possible to create {\itshape SimpleWeightedGraph\textless Integer, DefaultWeightedEdge\textgreater}, a graph with vertices marked with integers and weighted edges. Using class methods {\itshape addVertex()}, {\itshape setEdgeWeight()}, {\itshape addEdge()} for building graph and by creating edges by a constructor of {\itshape DefaultWeightedEdge} class, the mesh can be created. For illustration I add an example:
+	
+	\begin{verbatim}
+public static SimpleWeightedGraph<Integer, DefaultWeightedEdge> graph;
+
+private void createMesh(){
+	graph = new SimpleWeightedGraph<Integer, DefaultWeightedEdge>(Defau-
+	ltWeightedEdge.class);	
+	int v1 = 1, v2 = 2, v3 = 3;
+	graph.addVertex(1);
+	graph.addVertex(2);
+	graph.addVertex(3);
+	
+	DefaultWeightedEdge e1 = new DefaultWeightedEdge();
+	graph.setEdgeWeight(e, 5);
+	graph.addEdge(1, 2);
+
+	DefaultWeightedEdge e2 = new DefaultWeightedEdge();
+	graph.setEdgeWeight(e, 3);
+	graph.addEdge(1, 3);
+	
+	...
+
+}
+	\end{verbatim}
+	  
+	
+	
+	After building a graph with correct weights of edges, an algorithm for min-cut can be used.
+	
+	For the case of an exception invocation I packed the code in a try-catch statement. If any error occurs, a message dialog will show with a warning "{\itshape an error occured check the format of uploading files or check if images are of the same size}".
+	
+\end{document}
