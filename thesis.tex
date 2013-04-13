@@ -35,7 +35,7 @@
 %% Balíček hyperref, kterým jdou vyrábět klikací odkazy v PDF,
 %% ale hlavně ho používáme k uložení metadat do PDF (včetně obsahu).
 %% POZOR, nezapomeňte vyplnit jméno práce a autora.
-\usepackage[pdf,unicode]{hyperref}   % Musí být za všemi ostatními balíčky
+\usepackage[pdftex,unicode]{hyperref}   % Musí být za všemi ostatními balíčky
 \hypersetup{pdftitle=Název práce}
 \hypersetup{pdfauthor=Jméno Příjmení}
 
@@ -239,9 +239,10 @@ Keywords:
 
 %%% Jednotlivé kapitoly práce jsou pro přehlednost uloženy v samostatných souborech
 \include{preface}
-\include{chap1}
-\include{chap2}
-\include{chap3}
+\include{overview}
+\include{theory}
+\include{platform}
+\include{implementation}
 
 % Ukázka použití některých konstrukcí LateXu (odkomentujte, chcete-li)
 % \include{example}
