@@ -1,0 +1,24 @@
+\chapter{Related Work}
+In this section we mention some of the approaches that have been proposed earlier. 
+We consider algorithms for interest points detection and description especially. 
+It gives us an overview of already existing work.
+\section{Interest Point Detection}
+In 1988, Chris Harris and Mike Stephens \cite{harris1988} published their corner detector based on combining corner and edge detector. 
+Although this approach is not scale–invariant, it is widely used nowadays. 
+
+However, many computer vision tasks deal with the real world input data images where objects appear in different ways depending on the scale. 
+Due to this fact, Lindberg came out with automatic scale selection for feature detection \cite{lindberg1998}.
+
+There are several other approaches that have been introduced such as edge–based region detector by Jurie and Schmid \cite{jurie2004} or salient region detector by Kadir and Brady \cite{kadir2001}.
+But apparently they are not used that much. It seems that due better results and stability, most popular are Hessian–based detectors.
+
+Another example of Hessian–based detector is a detector published by Herbert Bay et al.\  in Speeded–Up Robust Features \cite{surf2006}. 
+This detector is partly inspired by SIFT algorithm, but it is several times faster and more robust against the scale transformation and the image rotation. 
+It relies on the approximation of determinant of the Hessian matrix that can be computed using integral images. 
+Hence, the computation is very fast (see the previous chapter).
+
+\section{Interest Point Description}
+Large number of interest point descriptors were introduced. 
+The most common one is scale–invariant feature transform \cite{lowe1999}, SIFT for short. 
+This algorithm was published in 1999 by a Canadian computer scientist David G. Lowe. 
+The descriptor is computed from the intensities around the key point locations where the local gradient direction of picture intensities gives description of the local  key point.

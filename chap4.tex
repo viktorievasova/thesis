@@ -1,0 +1,183 @@
+\chapter{Image processing algorithms}
+In the previous chapter we gave an overview of related work and algorithms that were introduced. 
+This chapter is concentrated on some of these approaches in greater detail. 
+We will describe three techniques -- SIFT and SURF algorithm for keypoints detection and then Min-cut/Max-flow graph algorithm.
+SIFT and SURF are the most used algorithms to detect features.
+Both of them are robust to scale and rotation.
+
+
+ Generally, feature matching algorithms first extract keypoints from a pair of photos of the same scene. 
+ If the feature detection is repeatable, most of the features should be detected in both images.
+ Then, for each feature a descriptor is generated, typically it is a high-dimensional vector. 
+ Usually, a descriptor is affine invariant.
+ Hence for a feature from different viewpoints should be generated the same vector.
+ Since the descriptors are computed,  we can match them between a pair of images. 
+ Due to the fact that our descriptors are vectors, we can match them according to the distance in the space, using Euclidean distance for example.
+ 
+\section{The SIFT algorithm}
+Scale-invariant feature transform (SIFT) was published already in 1999 by David Lowe \cite{lowe1999}. 
+Until now it is still very popular algorithm to generate matches for a pair of pictures.
+It is able to identify objects even among clutter in noisy images.
+SIFT feature descriptor is 128-dimensional vector invariant to scaling and orientation but only partially invariant to affine distortion and illumination changes.
+Hence the best results are given on the input images that do not differ much in the orientation.
+
+The feature points are detected from the grayscale version of an input image matching centres of blob-like structures.
+To each feature point is assigned an information about local orientation and scale and based on these data is the descriptor constructed.
+
+First step to reach the set of keypoints is creating a scale-space of an image.
+A scale-space is a series of blurred images derived from convolution of the image with Gaussian filter.
+The original image is blurred several times with larger and larger Gaussian kernel, then it is downsized and this process is applied again to the subsample.
+Since we have a scale-space, we subtract neighbouring images and like this generate a set of differences of Gaussians (DoG). 
+A DoG image can be formulated as
+ 
+\[ D(x, y) = G_{\sigma_1} * f(x, y) - G_{\sigma_2} * f(x, y) \]
+
+
+where $\mathb{f(x, y)}$ is the original image, $\mathb{*}$ presents convolution, $\mathb{\sigma_i}$ is the scale and $\mathb{G_{\sigma_i}}$ is Gaussian kernel. Hence
+\pagebreak
+
+\[
+D(x, y) = 
+\left[
+\left( \frac{1}{\sqrt{2\pi \sigma _1^{2}}}\exp\left ( -\frac{x^{2}+y^{2}}{2\sigma_1^{2}} \right ) \right) -
+\left( \frac{1}{\sqrt{2\pi \sigma _2^{2}}}\exp\left ( -\frac{x^{2}+y^{2}}{2\sigma_2^{2}} \right ) \right )
+ \right ] * f(x, y)
+\]
+These convolved images are grouped by octave, where an octave corresponds to doubling value of scale $\mathb{\sigma}$.
+
+
+Now we can define candidate keypoints as maxima and minima of the result of difference of Gaussian that occur at multiple scales.
+That are exactly the areas we are looking for -  spots of high contrast.
+%%example to show black and white area in DoG image + explanation
+This is done by comparing each pixel with its neighbouring pixels and also with corresponding pixels in neighbouring DoG image. 
+If the pixel value is the largest or the lowest among all compared pixels, it is selected as a candidate feature point.
+
+Usually, the detection of scale-space extrema results is a large amount of candidate keypoints.
+However, some of them are not stable and they need to be discarded.
+For each candidate we do the interpolation of nearby data to estimate its position.
+It is done using quadratic Taylor expansion of the Difference-of-Gaussian function around point:
+
+\[
+D(\mathbf{x}) = D + \frac{\partial D^{T}}{\partial \mathbf{x}}\mathbf{x} + \frac{1}{2}\mathbf{x^{T}}\frac{\partial ^{2}D}{\partial \mathbf{x^{2}}}\mathbf{x}
+\]
+
+where $\mathb{\mathbf{x} = (x, y, \sigma)}$ is the offset from the point.
+If the offset value is less than $\mathb{0.03}$, it indicates low contrast and a high probability of affection by noise or of corresponding to edges and the candidate is discarded.
+Otherwise we keep the keypoint.
+
+The next step is to describe the nearby area of each keypoint to generate the descriptor. 
+To achieve the invariance to rotation, the value of the gradient that establishes local orientation and scale of the keypoint is used.
+Firstly we compute gradients for pixels around the location of the keypoint.
+The nearby area is divided to 4x4 subregions and for each subregion is computed a histogram of 8 gradient values.
+The peaks of the histogram presents the dominant orientations.
+The orientations corresponding to the highest peak or peaks that are within 80\% of the highest peak are assigned to the feature.
+
+We create the descriptor using the gradient magnitudes of these regions.
+For a feature there are sixteen subregions, each with eight values of a histogram, that results in a 128-dimensional vector.
+
+All extracted keypoints are stored in a database; the last step is matching them.
+Typically, we do this by taking one feature and looking for the nearest (in the meaning of Euclidian distance) vector descriptor in the second image.
+%% example of successful application of sift
+
+\pagebreak
+\section{The SURF algorithm}
+Another popular algorithm detecting features is SURF (Speeded Up Robust Features).
+It was presented by Herbert Bay et al. \cite{surf2006} in the year 2006 and it is partially inspired by SIFT described above.
+SURF is based on computation of Haar wavelet responses, Hessian-matrix approximation and using integral images.
+
+To build a robust descriptor we need to detect keypoints that are invariant to scale thus we create a scale-space.
+That is because often is required to detect objects in different distances.
+A scale-space is usually implemented as an pyramid of subsequently smoothed images by Gaussian filter as was described in previous section concerned with SIFT algorithm.
+In this approach integral images are used, see previous chapter to get detailed information about integral images.
+So we do not have to iteratively apply the same filter, but we can reach the scaling by fast computing of integral image where the speed is independent to the size of filter.
+%%more about scaling...
+
+The detection of interest points is done by using basic Hessian-matrix and its approximation. 
+The Hessian for a point $\mathbf{x} = (x, y)$ in an image $\mathb{I}$ at scale $\mathb{\sigma}$ is defined as
+
+\[ H(x, \sigma) = \left(\begin{array}{c}  
+L_{xx}(x, \sigma)  L_{xy}(x, \sigma) \\ 
+L_{yx}(x, \sigma)  L_{yy}(x, \sigma)
+
+\end{array}\right)  \]
+
+where $\mathb{L_{xx}}$ presents the convolution of the Gaussian second order derivative with the image:
+
+\[
+L_{xx}(x, \sigma) = \frac{\partial ^{2}}{\partial x^{2}}g(\sigma) * I
+\]
+
+and similarly for $\mathb{L_{xy}}$ and $\mathb{L_{yy}}$
+\[
+L_{xy}(x, \sigma) = \frac{\partial ^{2}}{\partial x \partial y}g(\sigma) * I, 
+L_{xx}(x, \sigma) = \frac{\partial ^{2}}{\partial y^{2}}g(\sigma) * I.
+\]
+
+Since the Gaussian is considered as over-rated, in this approach we use box-filters instead and obtain speeded-up variation.
+Box filter approximation of Gaussian can be computed very quickly using integral images. 
+Size of a box filter correspond to the scale size of Gaussian, furthermore due to way of computing integral images, the calculation time is independent to the scale size.
+These approximations are computed for every scale of the scale-space and 
+those points that simultaneously are local extrema of both the determinant and trace of the Hessian matrix are chosen as candidate keypoints. 
+The trace of Hessian matrix is identical to the Laplacian of Gaussians (LoG).
+If we denote those approximating box filters as $\mathb{D_{xx}}$, $\mathb{D_{yy}}$ and $\mathb{D_{xy}}$, we get the determinant value
+ \[
+ det(H) =D_{xx} D_{yy} - \omega^{2} D_{xy}^{2}.
+ \]
+
+SURF descriptor is a high-dimensional vector consisting of the sum of the Haar wavelet response around the point of interest.
+The vector describes the distribution of the intensity within the neighbourhood of the keypoint.
+At first, to be invariant to image rotation, for a feature dominant orientation is established. 
+The Haar wavelet responses in $\mathb{x}$ and $\mathb{y}$ direction are calculated 
+and they are summed within a sliding orientation window of size $\mathb{\frac{\pi}{3}}$ afterwards.
+Again, the responses can be computed with the aid of the integral image.
+Summed responses then yield a local orientation vector. 
+The longest such vector lends the orientation of the feature. 
+
+The first step to extract the descriptor is constructing a square region around the keypoint aligned with dominant orientation.
+The size of the square area is $\mathb{20s}$, where $\mathb{s}$ is the scale where the keypoint was detected.
+We split the window into 4 x 4 regular square subregions and for each of them we compute Haar wavelet responses $\mathb{d_x}$ and $\mathb{d_y}$
+at 5 x 5 evenly spaced sample points inside.
+The sum of the responses for $\mathb{d_x}$ and $\mathb{d_y}$ and their absolute values
+$\mathb{|d_x|}$, $\mathb{|d_y|}$ separately results in a descriptor 
+$\mathbf{v} = (\sum{d_x}, \sum{d_y}, \sum{|d_x|}, \sum{|d_y|})$ for each subregion.
+Concatenating this for all 4 x 4 subregions gives 64-dimensional vector descriptor.
+
+Matching SURF descriptors between two images can be speeded-up by including the trace of Hessian (Laplacian) to the process of finding corresponding keypoints.
+We exploit the sign of Laplacian that distinguishes bright blobs on dark background from the reverse situation.
+In the matching stage we compare only features if they have the same sign -- type of contrast. 
+This costs no more time for computation since we already computed it during the previous stage.
+
+\section{SIFT vs. SURF}
+Both SIFT and SURF are popular feature descriptors based on the distribution of intensity around the interest point.
+SIFT used to be evaluated as the most robust and distinctive descriptor for feature matching.
+However, SURF has been shown to have similar performance to SIFT, but being much faster.
+The results of research in \cite{surf2006} point out the fast computation of a descriptor.
+SURF describes image three times faster than SIFT.
+The key to the speed is using integral images. 
+Also, the SURF descriptor is 64-dimensional vector in the comparison to 128 integers describing SIFT feature.
+Hence the SIFT matching costs more calculation time.
+Furthermore, due to the global integration of SURF-descriptor, it stays more robust to various perturbations than the SIFT descriptor.
+
+SURF offers invariance to rotation, handling image blurring, but SIFT is still more robust in illumination changes and viewpoint changes.
+
+
+\section{Maximum Flow Graph Cut Algorithm}
+In computer vision there is a general task of stereo correspondence.
+It is a problem of discovering the closest match between points of two pictures typically taken from different positions.
+Presumably, rectification of the images considerably simplifies the situation. 
+Sometimes this constraint can be done.
+Once the correspondences are solved, we obtain a disparity map and it can be exploited to reconstruct the positions and distances of the cameras.
+
+Generally, there are two approaches to find the corresponding points.
+One of them is to detect features and interest points in an image and then find corresponding points in the other one.
+Only these high distinctiveness points are matched, hence it is called sparse stereo matching.
+The second way, dense stereo matching, is to match as many pixels as possible.
+
+In 1999 Sébastien Roy published an algorithm \cite{roy1998} \cite{roy1999} to solve the stereo correspondence problem formulated as a maxim-flow problem in a graph.
+This approach does not use of epipolar geometry as many other do.
+It solves efficiently maximum-flow and gives a coherent minimum-cut that presents a disparity surface for the whole image.
+This way provides more accurate depth map then the classic algorithms and the result is computed in shorter time in addition.
+
+%The matching space is defined as a projective 3-d volume (to allow pyramids as well as cubes) formed
+
+
