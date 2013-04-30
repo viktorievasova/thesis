@@ -1,5 +1,182 @@
 \chapter{Developing for Android}
+Android, Inc\@. was founded in October in 2003 in California by  Andy Rubin, Rich Miner, Nick Sears and Chris White. 
+At first, the company planned to develop an operating system for digital camera, but when they realised that the market is not large enough,
+they decided to change their intentions and focused on smartphone operating system.
+That time, the Apple's iPhone was not released yet. 
+The rival mobile phones operating systems were Symbian and Windows Mobile.
 
-\section{}
+After four years with the financial aid of Google, Android was revealed.
+The first phone with Android operating system was sold in autumn 2008.
 
-\section{}
+Android is open source operating system and the code is released.
+This allows developers to modify and freely distribute the software.
+Due this, Android became the most expanded and used operating system for smart phones.
+
+In this chapter we will introduce the Android operating system and give a brief description how to implement an Android application.
+
+\section{Introduction to Android development}
+Android is a product of a group developing open standards for mobile devices led by Google.
+The Open Handset Alliance includes mobile operators, software providers and device and component manufacturers such as
+T-Mobile, HTC, Sony, Wind River Systems, Sprint Nextel and others.
+The first handset device running the Android operating system on the market was G1 developed by HTC (also known as the HTC Dream).
+It was released and offered to T-Mobile costumers in 2008 and a half-year after T-Mobile USA announced it had sold one million G1s.
+
+The Android platform is layered environment built upon a foundation of the Linux kernel.
+It includes wide range of functions and user interface supporting views, windows, displaying boxes and lists.
+Also an embedded browser build upon WebKit is included.
+WebKit is an open source browser engine that powers Apple's Safari web browser and the latest versions of Google Chrom.
+Most Android-powered devices have build in sensors to measure temperature, motion and orientation 
+such as accelerometer, gyroscope or a barometer.
+It also provides an array of connectivity options, for example WiFi, Bluetooth or wireless data.
+A build-in camera support is offered as well.
+In an effort to improve graphics, Android platform supports environment for 2D and 3D graphics development including OpenGL library.
+The data storage is sponsored by the SQLite database, a relational database management system as a library implementing self-contained and server-less SQL database engine.
+ 
+As we already mentioned, Android platform is powered by the Linux kernel. 
+It is used for memory and process management, device drivers, and networking.
+From the view of point of an Android architecture, this is the first and basic layer.
+Upon this level are Android native libraries including graphics, media codes, database (SQLite) and WebKit.
+They are all written in C or C++, but called through Java interface.
+We should note that the virtual machine applications are running within is not Java virtual machine, but Dalvik Virtual machine.
+It is a type of JVM adapted to low processing and memory power for Android.
+Android runtime layer consists of this DVM and core Java libraries.
+The next level up is the Application Framework.
+This layer manages the basic functions of phone. 
+The most important part of it is Activity Manager that manages the life cycle of an application and Content Providers managing the data sharing between applications.
+Other notable parts are Telephony Manager (handling voice calls), Location Manager (specifying location using GPS or cell tower) and Resource Manager.
+The top layer of the Android architecture is formed by applications.
+Some of them are preinstalled and provided by Google and parts are third party applications created by the community of developers.
+You can view the described structure of software layers in the diagram below.
+
+\begin{figure}[h!]
+    \centering{\includegraphics[width=80mm]{img/software_layers.png}}
+    \caption{Structure of Android architecture.}
+\end{figure}
+
+
+Android applications are written in Java programming language and runs within an instance of Dalvik virtual machine.
+An application using the user interface is implemented with an activity. 
+An activity creates a window of the application and allows the developer to view the UI.
+An inseparable part of the application is AndroidManifest\@.xml file containing necessary information how to properly install it to the device 
+including permissions the application needs to run. 
+An example of such a permission is acquiescence to use a camera equipment, access memory to write files or use the Internet.
+All these requirements need to be explicitly listed in the manifest file.
+We will concentrate more on activities and their development in the next sections.
+
+\begin{figure}[h!]
+    \centering{\includegraphics[width=80mm]{img/dalvik.png}}
+    \caption{Each Android application runs within an instance of Dalvik virtual machine which is placed in Linux kernel process.}
+\end{figure}
+
+There are required tools to develop Android applications.
+The Android software development kit (the Android SDK) is freely available on the developer website.
+The environment to develop an application is the Eclipse IDE.
+The Android SDK is provided as \@.zip file including Java archive file containing all necessary classes to build an application (android\@.jar),
+the SDK documentation, a directory with sample code, Android Debug Bridge and other tools needed to build an application.
+
+In the rest of this chapter we will describe some of the implementing parts when developing an application.
+
+\section{Application Components}
+When an application is installed to a device, it lives in its security sandbox.
+Android offers a secure environment where the applications are isolated and can safely run their code.
+To each application the Linux system assign user ID number. 
+Android is multi-user operating system, which means that each application is a different user with a different ID.
+This number is known only to the system that sets permissions to all files so they can not be accessed by any other applications.
+Each application runs unique Linux process initiated when an application or any component of it needs to be executed.
+When the system needs to recover the memory or the application is not used for some time, the process shuts down.
+Releasing memory works on the principe ``oldest first`` -- at first the system kills the apps that were inactive for the longest time.
+Each process has its own virtual machine. This provides the security and isolation between the applications.
+
+The security is risen by the principle of least privilege.
+Due this principle an application has access only to the required components of the system. 
+These requirements must be stated in the manifest file.
+This protects the whole Android system and the applications from each other.
+
+An application has several components that are used to build it.
+We can divide the basic building blocks into four different groups:
+\begin{itemize}
+\item{Activities}
+\item{Services}
+\item{Content providers}
+\item{Broadcast receivers}
+\end{itemize}
+
+\emph{Activity} is a screen providing the user interface.
+In the activity a developer place elements such as Views, Lists, Buttons, Labels etc. 
+The layout of an activity and the widgets placed in the window are described in a separate XML file (we will reveal more about user interface later).
+Most of applications consist of more than one bounded activities.
+Although the activities form one application, they are all independent from each other.
+If another application has a permission to do so, it can start an activity of a different app.
+
+Usually in a application there is a one main activity that shows up to the user at first after launching it.
+To this one are all other activities linked.
+Each Activity in android will be subclass of Activity class defined in Android SDK.
+
+A \emph{service} is a component used to perform operations in background.
+It can be invoked by an activity for example.
+If the application needs to run long-term process, user can switch to another application and our process can continue to run in background.
+This can be exploited to develop an application to play music or an application which needs to fetch data in the background.
+
+A \emph{content provider} manages sharing data across the applications.
+When the app is storing any data - in file system, SQLite database or any online storage, through the content provider they can be accessed or even modified from other applications.
+An example when a content provider is used is an application working with the contacts database.
+
+A \emph{broadcast receiver} is a component broadcasted by the Android system.
+It usually inform applications about some basic actions such as turning the screen off, running out of battery or changes of timezone.
+Applications can also initiate broadcasts to let other apps know about some action, that there some data ready to use or about completed downloading for example.
+%A broadcast receiver is implemented as a subclass of an abstract class BroadcastReceiver.
+
+From these mentioned components, activities, services and broadcasts are activated by intents.
+An intent is a message to the system to invoke new activity, service or a broadcast.
+It is a component activating mechanism in Android.
+
+A very important part of an application is AndroidManifest\@.xml file, where are specified all permissions of the application.
+Each Activity we create must be defined in it. Basically, every component that is used in the application must be declared in the manifest.
+%code example
+
+
+\section{The Activity Lifecycle}
+As we already stated, an app can consist of one or more activities.
+Such an application switches between different states of its life cycle.
+We don't have such a control on the life time as we have in desktop platforms.
+The life cycle is a collection of functions operating system calls on the application while it is running.
+
+There are five stages of the life of an application:
+\begin{itemize}
+\item{Starting state}
+\item{Running state}
+\item{Paused state}
+\item{Stopped state}
+\item{Destroyed state}
+\end{itemize}
+
+The starting state and destroyed state are phases of the activity when it is not in the memory.
+To launch the app, the method \emph{onCreate()} is called and eventually it is in a running state.
+When the activity is in a running state it is actually on the screen seen by the user.
+The activity is in foreground and handling all user interactions such as typing or touching the screen.
+An activity in this state has the highest priority of getting memory in the Android Activity stack to run as quickly as possible.
+It will be killed by the operating system only in extreme situations.
+This transition from starting to running state is the most expensive operation and affects the battery and other processes.
+That is also the reason why we don't destroy every activity when it gets to the background, 
+because it is probable that it is going to be called back in a while and we don't want to create all of it again.
+
+\begin{figure}[h!]
+    \centering{\includegraphics[width=80mm]{img/life_cycles.png}}
+    \caption{Life cycles of an application.}
+\end{figure}
+
+The application is paused (in a paused state) when it is not interacting with user at the moment, but still visible on the screen.
+This state does not occur that often, because most of applications cover entire screen.
+But when a dialog box appears or another Activity is on the top of this one but not hiding it all, the underlying activity is partly visible and it is paused.
+
+When the application is not visible, but still in memory, it is in a stopped state.
+Then it is easy to bring it up to the front again or it can be destroyed, removed from the memory a brought to the destroyed state.
+
+\section{User Interface}
+
+\section{Sensors}
+
+\section{Data Storage}
+
+
+
