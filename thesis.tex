@@ -30,14 +30,19 @@
 
 %% Ostatní balíčky
 \usepackage{graphicx}
-\usepackage{amsthm}
+\usepackage{amsthm, amsmath}
+\usepackage{xcolor}
 
 %% Balíček hyperref, kterým jdou vyrábět klikací odkazy v PDF,
 %% ale hlavně ho používáme k uložení metadat do PDF (včetně obsahu).
 %% POZOR, nezapomeňte vyplnit jméno práce a autora.
-\usepackage[ps2pdf,unicode]{hyperref}   % Musí být za všemi ostatními balíčky
-\hypersetup{pdftitle=Název práce}
-\hypersetup{pdfauthor=Jméno Příjmení}
+\usepackage[pdftex,unicode]{hyperref}   % Musí být za všemi ostatními balíčky
+\hypersetup{pdftitle=3D Computer Vision on the Android Platform}
+\hypersetup{pdfauthor=Viktorie Vasova}
+
+%% Pro psani prace vecer je mozne odkomentovat nasledujici dva radky 
+% \pagecolor[rgb]{0,0,0}
+% \color[rgb]{1,1,1}
 
 %%% Drobné úpravy stylu
 
@@ -227,6 +232,9 @@ Keywords:
 \vss}
 
 \newpage
+
+%%% Pridame si soubor se sikovnymi zkratkami 
+\include{macros} 
 
 %%% Strana s automaticky generovaným obsahem bakalářské práce. U matematických
 %%% prací je přípustné, aby seznam tabulek a zkratek, existují-li, byl umístěn

@@ -1,16 +1,40 @@
 \chapter*{Introduction}
-In the recent years, many researchers have been interested by the task of Computer Vision. 
-Particularly the problem of 3D reconstruction is being investigated a lot. 
-At this moment there is a great number of algorithms to solve problems in this area. 
-Most of the approaches depend on the kind of input that is available (a set of pictures – determining is also how many pictures are taken, a video stream, etc.) and also on the output that we expect.The work of many researches resulted in several online applications such as PhotoSynth by Microsoft or 
-Google StreetView that is used by millions of people nowadays.Meanwhile we could observe a large progress of telecommunication devices. 
-In recent years, it became very common to own a smartphone. 
-Especially mobile phones with Android platform are very popular. 
-A built–in camera and large amount of applications is typical for such kind of telephone.The goal of this work is to explore ways how to connect these two phenomena and to create an Android application that takes a set of pictures and visualizes the result of the reconstruction of the depth information. 
-Due to the ambiguity of solving the task, we have to be aware of the fact that it is possible, that our application will be limited to only particular type of scenes. 
-
-The first part of this work analyses the problem, describes available software and gives an overview of programming libraries and languages that were used. 
-Secondly, we focus on the theoretical basics and introduced approaches connected to this topic.
-The next section is denoted to the implementation of our application and finally we evaluate and benchmark our work.
 \addcontentsline{toc}{chapter}{Introduction}
+
+
+% In the recent years, many researchers have been interested by the task of Computer Vision. 
+% 	"task of computer vision" mi pripada zvlastni; task je jeden konkretni ukol, Computer Vision je cely velky obor, coz moc nejde dohromady; navic asi precijen zacneme trochu konkretneji
+The task of reconstructing 3D information from multiple 2D photos of a real-world scene has attracted a lot research in the last two decades and in the recent years in particular.
+% 	tim padem muzeme tohle vyskrtnout 
+% Particularly the problem of 3D reconstruction is being investigated a lot. 
+% 	Kazdopadne pokracujme... 
+% At this moment there is a great number of algorithms to solve problems in this area. 
+A great number of algorithms have been proposed to solve problems in this area and several main approaches emerged. 
+% Most of these approaches depend on the kind of input that is available 
+% (a set of pictures -- determining is also how many pictures are taken, a video stream, etc.) 
+% and also on the output that we expect.
+The applicability of these approaches depends mainly on what kind of input we intend to feed the algorithm 
+(an unorganized set of photos, a video stream, a pair of stereoscopic images, etc.) 
+and also on what kind of output we expect the algorithm to produce (polygonal model, a disparity map). 
+As a result of this progress, various real-world applications for these algorithms have appeared -- 
+e.g., several video trackers or products like Microsoft PhotoSynth.
+
+Simultaneously, both the general availability and the computational strength of smartphones have improved rapidly.
+Especially mobile phones that employ the Linux-based Android software platform are currently very popular. \todo{uvest procentualni podil na trhu, pridat citaci}
+A built–in camera and a relatively fast CPUs are very common in such mobile phones.
+% tahle veta by mohla jeste pokracovat ..., making it possible to...
+
+The goal of this work is to explore ways how to connect these two phenomena. 
+Our aim is to create an Android application that takes a set of photos using the phone's internal camera, applies a series of computer vision algorithms to reconstruct the depth information, and visualizes the result using 3D graphics. 
+Due to the inherent ambiguity of the problem, it is inevitable that our approach will be limited to only particular types of scenes, for example sets of photos of highly textured surfaces. 
+% TODO Tuhle vetu zatim vynechavam, protoze je moc odvazna... 
+% One of our main goals is to investigate how well the solving of such a computation-intesive problem can be done within the limits of a Java-based environment running on a mobile phone or a tablet computer.
+
+\todo{nasledujici vety by se mely primo odkazovat na sekce}
+The first part of this work analyses the problem, describes available software and gives an overview of programming libraries and languages that were used. 
+Secondly, we focus on the theoretical foundations of 3D reconstruction from image data. % and techniques connected to this topic.
+The next section is devoted to the implementation of our application.
+Finally, we evaluate and benchmark the resulting application. 
+\todo{tady bychom urcite chteli explicitneji napsat, ze vysledkem budou i nejake datasety, ale to se zvladne az to budeme mit napsane}
+
 

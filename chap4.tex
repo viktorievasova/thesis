@@ -33,7 +33,7 @@ A DoG image can be formulated as
 \[ D(x, y) = G_{\sigma_1} * f(x, y) - G_{\sigma_2} * f(x, y) \]
 
 
-where $\mathb{f(x, y)}$ is the original image, $\mathb{*}$ presents convolution, $\mathb{\sigma_i}$ is the scale and $\mathb{G_{\sigma_i}}$ is Gaussian kernel. Hence
+where $\mathbf{f(x, y)}$ is the original image, $\mathbf{*}$ presents convolution, $\mathbf{\sigma_i}$ is the scale and $\mathbf{G_{\sigma_i}}$ is Gaussian kernel. Hence
 \pagebreak
 
 \[
@@ -44,7 +44,6 @@ D(x, y) =
  \right ] * f(x, y)
 \]
 These convolved images are grouped by octave, where an octave corresponds to doubling value of scale $\mathb{\sigma}$.
-
 
 Now we can define candidate keypoints as maxima and minima of the result of difference of Gaussian that occur at multiple scales.
 That are exactly the areas we are looking for -  spots of high contrast.
