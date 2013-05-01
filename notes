@@ -1,0 +1,8 @@
+Notes
+=====
+
+(Toto je soubor s poznamkami -- zejmena temi, ktere potrebujeme pred odevzdanim vyladit. Snazim se psat kazdou na jednu radku.) 
+
+Proc nekdy pouzivame pro boldovani pisma v matematice \mathbf a nekdy \mathb? Na mem systemu to druhe ani neni nadefinovane, takze se to bez explicitni definice, kterou jsem pridal do macros.tex, toho nevygeneruje. 
+
+Lepsi formulace pro "theoretical foundations of 3D reconstruction from image data".
