@@ -8,3 +8,5 @@ Proc nekdy pouzivame pro boldovani pisma v matematice \mathbf a nekdy \mathb? Na
 Blabla, tuhle radku jsem pridal, abych si pripomenul, jak se dela mergovani. AHOJ! Tak schvalne, co to udela ted. 
 
 Lepsi formulace pro "theoretical foundations of 3D reconstruction from image data".
+
+Pozor, ze macro \cv je nutne typicky pouzivat jako \cv\. Jinak pak nebude mezera za slovem "Vision". 

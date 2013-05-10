@@ -1,9 +1,9 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-% In the recent years, many researchers have been interested by the task of Computer Vision. 
-% 	"task of computer vision" mi pripada zvlastni; task je jeden konkretni ukol, Computer Vision je cely velky obor, coz moc nejde dohromady; navic asi precijen zacneme trochu konkretneji
-The task of reconstructing 3D information from multiple 2D photos of a real-world scene has attracted a lot research in the last two decades and in the recent years in particular.
+% In the recent years, many researchers have been interested by the task of computer vision. 
+% 	"task of computer vision" mi pripada zvlastni; task je jeden konkretni ukol, computer vision je cely velky obor, coz moc nejde dohromady; navic asi precijen zacneme trochu konkretneji
+The task of reconstructing 3D information from multiple 2D photos of a real-world scene has attracted a lot of research in the last two decades and in the recent years in particular.
 % 	tim padem muzeme tohle vyskrtnout 
 % Particularly the problem of 3D reconstruction is being investigated a lot. 
 % 	Kazdopadne pokracujme... 
@@ -16,16 +16,16 @@ The applicability of these approaches depends mainly on what kind of input we in
 (an unorganized set of photos, a video stream, a pair of stereoscopic images, etc.) 
 and also on what kind of output we expect the algorithm to produce (polygonal model, a disparity map). 
 As a result of this progress, various real-world applications for these algorithms have appeared -- 
-e.g., several video trackers or products like Microsoft PhotoSynth.
+e.g., several camera trackers or products like Microsoft PhotoSynth. % TODO pridat referenci na web PhotoSynthu nebo na clanek
 
-Simultaneously, both the general availability and the computational strength of smartphones have improved rapidly.
-Especially mobile phones that employ the Linux-based Android software platform are currently very popular. \todo{uvest procentualni podil na trhu, pridat citaci}
+Simultaneously, both the general availability and the computational power of smartphones have improved significantly.
+Mobile phones that employ the Linux-based Android software platform are currently very popular. \todo{uvest procentualni podil na trhu, pridat citaci}
 A built–in camera and a relatively fast CPUs are very common in such mobile phones.
 % tahle veta by mohla jeste pokracovat ..., making it possible to...
 
 The goal of this work is to explore ways how to connect these two phenomena. 
-Our aim is to create an Android application that takes a set of photos using the phone's internal camera, applies a series of computer vision algorithms to reconstruct the depth information, and visualizes the result using 3D graphics. 
-Due to the inherent ambiguity of the problem, it is inevitable that our approach will be limited to only particular types of scenes, for example sets of photos of highly textured surfaces. 
+Our aim is to create an Android application that takes a set of photos using the phone's internal camera, applies a series of \cv\ algorithms to reconstruct the depth information, and visualizes the result using 3D graphics. 
+Due to the inherent ambiguity of the problem, it is inevitable that our approach will be limited to particular types of scenes, for example sets of photos of highly textured surfaces. 
 % TODO Tuhle vetu zatim vynechavam, protoze je moc odvazna... 
 % One of our main goals is to investigate how well the solving of such a computation-intesive problem can be done within the limits of a Java-based environment running on a mobile phone or a tablet computer.
 
