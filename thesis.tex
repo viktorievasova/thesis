@@ -30,8 +30,16 @@
 
 %% Ostatní balíčky
 \usepackage{graphicx}
-\usepackage{amsthm, amsmath}
+\usepackage{amsthm, amstext, amssymb, amsmath}
 \usepackage{xcolor}
+\usepackage{framed}
+
+%% Prostredi pro psani vet, definic, ... 
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{proposition}[theorem]{Proposition}
 
 %% Balíček hyperref, kterým jdou vyrábět klikací odkazy v PDF,
 %% ale hlavně ho používáme k uložení metadat do PDF (včetně obsahu).
@@ -41,8 +49,8 @@
 \hypersetup{pdfauthor=Viktorie Vasova}
 
 %% Pro psani prace vecer je mozne odkomentovat nasledujici dva radky 
-\pagecolor[rgb]{0,0,0}
-\color[rgb]{1,1,1}
+% \pagecolor[rgb]{0,0,0}
+% \color[rgb]{1,1,1}
 
 %%% Drobné úpravy stylu
 
@@ -248,8 +256,8 @@ Keywords:
 %%% Jednotlivé kapitoly práce jsou pro přehlednost uloženy v samostatných souborech
 \include{preface}
 \include{chap1}
-\include{chap2}
 \include{chap3}
+% \include{chap2}
 \include{chap4}
 \include{chap5}
 \include{chap6}

@@ -10,3 +10,41 @@ Blabla, tuhle radku jsem pridal, abych si pripomenul, jak se dela mergovani. AHO
 Lepsi formulace pro "theoretical foundations of 3D reconstruction from image data".
 
 Pozor, ze macro \cv je nutne typicky pouzivat jako \cv\. Jinak pak nebude mezera za slovem "Vision". 
+
+Bylo by dobre prejmenovat soubory kapitol z chap1, chap2, ... na neco, co odpovida obsahu jednotlivych kapitol, protoze je pak problem s jejich prehazovanim
+
+Zkracene tvary (let's, it's, isn't) se nepouzivaji. Temer vse se ma psat v pritomnem case. 
+
+Obecnejsi popis OpenCV chceme presunout do Overview 
+
+Jak kapitalizovat nadpisy? Rozhodne alepson sjednotit. 
+
+Na nasledujici adrese je navod na pouzivani amsmath balicku: 
+ftp://ftp.ams.org/pub/tex/doc/amsmath/amsldoc.pdf
+Vsimni si, ze u vetsiny prostredich se nepouziva $$ na zacatek matematiky. 
+
+This chapter concentrates => This chapter focuses
+
+Carky/tecky za rovnicemi, vyrazy a pod. 
+
+Hvezdickovat rovnice (a pod.), na ktere neni odkazovano v textu. 
+
+Rict, ze provadime zneuziti znaceni: I(x, y) = I(\x).
+
+Rict, ze x_i je i-ta slozka \x.
+
+Na obrazky/sekce/cokoliv zasadne odkazovat pomoci \ref
+
+V 'Image Processing Alg' kapitole jsem to hned od zacatku rozdelil do dvou casti: sparse correspondence a dense correspondence. 
+
+Pripadne by bylo fajn zmenit lindberg1998 na lindeberg1998. 
+
+Zmenil jsem f(x, y) na I(x, y) pro obrazky. 
+
+Pozor na interpunkci pri psani matematickych vyrazu. Mela by odpovidat tomu, jak by ten vyraz byl zasazeny do bezne vety. 
+
+Matice pisme pres prostredi pmatrix z amsmath balicku.
+
+Determinant se znaci pomoci \det ne det
+
+Kazda figure nebo rovnice nemusi mit vlastni odstavec... 

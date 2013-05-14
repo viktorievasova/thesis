@@ -1,79 +1,84 @@
+
+
+
+
+
+
+
+
+
 \chapter{Developing for Android}
-Android, Inc\@. was founded in October in 2003 in California by  Andy Rubin, Rich Miner, Nick Sears and Chris White. 
-At first, the company planned to develop an operating system for digital camera, but when they realised that the market is not large enough,
-they decided to change their intentions and focused on smartphone operating system.
-That time, the Apple's iPhone was not released yet. 
-The rival mobile phones operating systems were Symbian and Windows Mobile.
 
-After four years with the financial aid of Google, Android was revealed.
+Android, Inc\@. was founded in October in 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White. 
+At first, the company planned to develop an operating system for digital cameras % but when they realised that the market is not large enough,
+but ultimately % they decided to change their intentions and 
+decided to focus on smartphones instead. % operating system.
+% That time, the Apple's iPhone was not released yet. 
+% The rival mobile phones operating systems were Symbian and Windows Mobile.
+% After four years with the financial aid of Google, Android was revealed.
 The first phone with Android operating system was sold in autumn 2008.
-
-Android is open source operating system and the code is released.
+% Android is an open source operating system and the code is released.
+Majority of Android's code is released under a free license. 
 This allows developers to modify and freely distribute the software.
-Due this, Android became the most expanded and used operating system for smart phones.
-
-In this chapter we will introduce the Android operating system and give a brief description how to implement an Android application.
+Due to this, Android became the most common operating system for smartphones.
+In this chapter we will introduce the Android operating system from programmers perspective and give a brief description of how to implement an Android application.
 
 \section{Introduction to Android development}
+
 Android is a product of a group developing open standards for mobile devices led by Google.
 The Open Handset Alliance includes mobile operators, software providers and device and component manufacturers such as
-T-Mobile, HTC, Sony, Wind River Systems, Sprint Nextel and others.
-The first handset device running the Android operating system on the market was G1 developed by HTC (also known as the HTC Dream).
-It was released and offered to T-Mobile costumers in 2008 and a half-year after T-Mobile USA announced it had sold one million G1s.
+T-Mobile, HTC, Sony, and others.
+The first handset device running the Android operating system on the market was G1 developed by HTC (also known as the HTC Dream). \todo{nebylo by lepsi tuhle informaci rict v uvodu, kdyz tam zminujeme, kdy byl prni telefon uveden?}
+% It was released and offered to T-Mobile costumers in 2008 and a half-year after T-Mobile USA announced it had sold one million G1s.
 
-The Android platform is layered environment built upon a foundation of the Linux kernel.
-It includes wide range of functions and user interface supporting views, windows, displaying boxes and lists.
+The Android platform is a layered environment built upon the foundation of the Linux kernel.
+It includes a wide range of functions and user interface supporting views, windows, displaying boxes and lists.
 Also an embedded browser build upon WebKit is included.
-WebKit is an open source browser engine that powers Apple's Safari web browser and the latest versions of Google Chrom.
+WebKit is an open source browser engine that powers Apple's Safari web browser and the latest versions of Google Chrome.
 Most Android-powered devices have build in sensors to measure temperature, motion and orientation 
-such as accelerometer, gyroscope or a barometer.
-It also provides an array of connectivity options, for example WiFi, Bluetooth or wireless data.
+such as an accelerometer, a gyroscope or a barometer.
+It also provides an array of connectivity options, for example WiFi, Bluetooth or cellular data.
 A build-in camera support is offered as well.
-In an effort to improve graphics, Android platform supports environment for 2D and 3D graphics development including OpenGL library.
-The data storage is sponsored by the SQLite database, a relational database management system as a library implementing self-contained and server-less SQL database engine.
+% In an effort to improve graphics, the Android platform supports an environment for 2D and 3D graphics development including OpenGL library.
+The data storage support is provided by SQLite, a relational database management system in the form of a library implementing self-contained and server-less SQL database engine.
  
-As we already mentioned, Android platform is powered by the Linux kernel. 
+As already mentioned, the basic layer of the Android platform is formed by a variant of the Linux kernel. 
 It is used for memory and process management, device drivers, and networking.
-From the view of point of an Android architecture, this is the first and basic layer.
-Upon this level are Android native libraries including graphics, media codes, database (SQLite) and WebKit.
-They are all written in C or C++, but called through Java interface.
-We should note that the virtual machine applications are running within is not Java virtual machine, but Dalvik Virtual machine.
-It is a type of JVM adapted to low processing and memory power for Android.
-Android runtime layer consists of this DVM and core Java libraries.
-The next level up is the Application Framework.
-This layer manages the basic functions of phone. 
-The most important part of it is Activity Manager that manages the life cycle of an application and Content Providers managing the data sharing between applications.
-Other notable parts are Telephony Manager (handling voice calls), Location Manager (specifying location using GPS or cell tower) and Resource Manager.
-The top layer of the Android architecture is formed by applications.
-Some of them are preinstalled and provided by Google and parts are third party applications created by the community of developers.
-You can view the described structure of software layers in the diagram below.
-
+% From the point of view of the Android architecture, this is the first and basic layer.
+Above this level are the Android native libraries, which include graphics support, media codecs, a database library (SQLite) and WebKit.
+They are written in C or C++ and called through a Java interface.
+The actual applications are running on the Dalvik Virtual Machine (DVM), which is an implementation of Java virtual machine optimized to low processing power and memory resources.
+% We should note that the virtual machine applications are running within is not Java virtual machine, but Dalvik Virtual machine.
+The Android runtime layer consists of this DVM and core Java libraries. \todo{nemeli bychom kapitalizovat Android Runtime Layer?}
+The next level up is the Application Framework, which manages the basic functions of a phone. 
+Its major part is formed by the Activity Manager (managing the life cycle of applications) and various Content Providers (managing data sharing between the applications).
+Other notable parts are the Telephony Manager (handling voice calls), the Location Manager (specifying location using GPS or cell tower) and the Resource Manager.
+The top layer of the Android architecture is formed by the individual applications.
+Some of them are preinstalled and provided by Google and parts are third party applications created by the community.
+The structure of the system is illustrated on the diagram below. \todo{tady spis odkazat ``in Figure XY''}
 \begin{figure}[h!]
     \centering{\includegraphics[width=80mm]{img/software_layers.png}}
-    \caption{Structure of Android architecture.}
+    \caption{The structure of Android architecture.}
 \end{figure}
-
-Android applications are written in Java programming language and runs within an instance of Dalvik virtual machine.
-An application using the user interface is implemented with an activity. 
-An activity creates a window of the application and allows the developer to view the UI.
+Android applications are written in the Java programming language and run within an instance of Dalvik Virtual Machine.
+A typical application is implemented using at least one activity. 
+An activity creates a window of the application and allows the developer to render the UI.
 An inseparable part of the application is AndroidManifest\@.xml file containing necessary information how to properly install it to the device 
-including permissions the application needs to run. 
-An example of such a permission is acquiescence to use a camera equipment, access memory to write files or use the Internet.
-All these requirements need to be explicitly listed in the manifest file.
-We will concentrate more on activities and their development in the next sections.
-
+including permissions the application needs to run. \todo{Proc jsme ted od vykreslovani GUI skocili zpatky k instalovani aplikace na zarizeni? Cekal bych, ze usporadani textu bude respektovat life cycle aplikace}
+An example of such a permission is the ability to use the phone's camera or to access the Internet.
+All such requirements need to be explicitly listed in the manifest file.
+We concentrate more on activities and their development in the following sections.
 \begin{figure}[h!]
     \centering{\includegraphics[width=80mm]{img/dalvik.png}}
-    \caption{Each Android application runs within an instance of Dalvik virtual machine which is placed in Linux kernel process.}
+    \caption{A typical Android application runs within an instance of Dalvik Virtual Machine on a Linux kernel.} % TODO "on a Linux kernel" se mi moc nelibi...
 \end{figure}
 
-There are required tools to develop Android applications.
-The Android software development kit (the Android SDK) is freely available on the developer website.
-The environment to develop an application is the Eclipse IDE.
-The Android SDK is provided as \@.zip file including Java archive file containing all necessary classes to build an application (android\@.jar),
-the SDK documentation, a directory with sample code, Android Debug Bridge and other tools needed to build an application.
+The tools required for the development of an Android application are the Android Software Development Kit (SDK) and a Java IDE, such as Eclipse or IntelliJ IDEA. 
+The Android SDK contains an Eclipse plugin supporting Android developement, documentation, sample code, and various tools, such as Android Debug Bridge used by the programmer to communicate with an application running on a device. 
+% % \item The Android SDK is provided as \@.zip file including Java archive file containing all necessary classes to build an application (android\@.jar),
+% the SDK documentation, a directory with sample code, Android Debug Bridge and other tools needed to build an application.
 
-In the rest of this chapter we will describe some of the implementing parts when developing an application.
+% TODO: tohle pripadne pridejme az ten text bude vyladenejsi: In the rest of this chapter we describe some of the implementing parts when developing an application.
 
 \section{Application Components}
 When an application is installed to a device, it lives in its security sandbox.
@@ -135,28 +140,28 @@ Each Activity we create must be defined in it. Basically, every component that i
 
 
 \section{The Activity Lifecycle}
-As we already stated, an app can consist of one or more activities.
-Such an application switches between different states of its life cycle.
-We don't have such a control on the life time as we have in desktop platforms.
+As we have already stated, a typical application consists of one or more activities.
+Such an application switches between different states of its life cycle. \todo{jak souvisi to, ze aplikace ma aktivity s tim, ze aplikace prechazi mezi nejakymi stavy? V dalsim se pak hovori stavech aktivit a ne aplikaci} 
+Compared to desktop platforms, the programmer has only limited control over the state transitions. \todo{napsat priklad toho, co se muze stat na Androidu a nemuze se stat na desktopu}
 The life cycle is a collection of functions operating system calls on the application while it is running.
 
 There are five stages of the life of an application:
 \begin{itemize}
-\item{Starting state}
-\item{Running state}
-\item{Paused state}
-\item{Stopped state}
-\item{Destroyed state}
+\item the starting state,
+\item the running state,
+\item the paused state,
+\item the stopped state,
+\item and the destroyed state.
 \end{itemize}
 
-The starting state and destroyed state are phases of the activity when it is not in the memory.
+The starting state and teh destroyed state are phases of the activity when it is not in the memory.
 To launch the app, the method \emph{onCreate()} is called and eventually it is in a running state.
 When the activity is in a running state it is actually on the screen seen by the user.
 The activity is in foreground and handling all user interactions such as typing or touching the screen.
 An activity in this state has the highest priority of getting memory in the Android Activity stack to run as quickly as possible.
 It will be killed by the operating system only in extreme situations.
-This transition from starting to running state is the most expensive operation and affects the battery and other processes.
-That is also the reason why we don't destroy every activity when it gets to the background, 
+This transition from starting to running state is the most expensive operation in terms of battery requirements.
+That is also the reason why we do not destroy every activity when it gets to the background, 
 because it is probable that it is going to be called back in a while and we don't want to create all of it again.
 
 \begin{figure}[h!]
