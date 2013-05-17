@@ -1,12 +1,6 @@
 
-
-
-
-
-
-
-
 \chapter{Image Processing Algorithms}
+\label{chap:algorithms}
 
 % TODO predchozi kapitolky byly poprehazeny, vynechcany: In the previous chapter we gave an overview of related work and algorithms that were introduced. 
 % This chapter is concentrated on some of these approaches in greater detail. 
@@ -22,7 +16,7 @@ In the latter, the objective is to obtain a correspondence in the second image f
 % We can either aim to establish correspondences between a restricted set of primitives, for example just the most stable looking corners detected in the images, or we can aim to establish a correspondence from (almost) every pixel of the reference image. 
 % The former approach is called \term{sparse correspondence problem} 
 
-We describe two techniques solving the sparse correspondence problem -- the SIFT and SURF feature detectors/descriptors -- and then introduce a max-flow algorithm for the dense correspondence problem. \todo{potrebujeme urcite pridat citace}
+We describe two techniques solving the sparse correspondence problem -- the SIFT \cite{lowe1999} and SURF \cite{surf2006} feature detectors/descriptors -- and then introduce a max-flow algorithm \cite{roy1999} for the dense correspondence problem. \update{potrebujeme urcite pridat citace}{/nevim, jestli to je takto dostacujici/}
 
 % We describe three techniques -- the SIFT feature detector/descriptor, the SURF feature detector/descriptor, and the Graph-cut algorithm. \todo{potrebujeme urcite pridat citace}
 % SIFT and SURF are the most used algorithms to detect features.
@@ -41,7 +35,7 @@ The SIFT descriptor is also partially invariant to affine transformations and il
 % Due to the fact that our descriptors are vectors, we can match them according to the distance in the space, using Euclidean distance for example.
  
 \section{Scale-invariant feature transform}
-Scale-invariant feature transform (SIFT) was introduced by David Lowe in \cite{lowe1999}, building on a previous work by Lindeberg \cite{lindberg1998}.  % \todo{pridani citace naLindeberg, T. 1994. Scale-space theory: A basic tool for analysing structures at different scales. Journal of Applied Statistics, 21(2):224-270.} 
+Scale-invariant feature transform (SIFT) was introduced by David Lowe in \cite{lowe1999}, building on a previous work by Lindeberg \cite{lindeberg1998}.  % \todo{pridani citace naLindeberg, T. 1994. Scale-space theory: A basic tool for analysing structures at different scales. Journal of Applied Statistics, 21(2):224-270.} 
 The paper describes both a feature detector and descriptor.
 To this day, SIFT remains a popular choice for applications such as panorama stitching and object detection.
 % It is able to identify objects even among clutter in noisy images. % TODO tady si nejsem jisty, jestli v tomhle miste v textu je to pro nas relevantni; mozna by se to dalo zminit, kdyby se to prepsalo trochu jinak

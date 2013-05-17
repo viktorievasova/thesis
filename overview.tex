@@ -31,19 +31,25 @@ The camera parameters are then calculated from the 2D movement of the tracks.
 In \cv\, this approach is called \term{structure from motion}, since the structure of the scene (for example, the trajectory of the camera) is determined by the apparent movement of the tracks on the 2D frames.  
 The 3D positions of the scene-points corresponding to the detected corners can also be calculated, giving the user a very rough point cloud reconstruction of the scene.
 
-Examples of widely used matchmoving applications include 2d3's Boujou \todo{link} and Autodesk Matchmover \todo{link}.
-The opensource libmv project \todo{link} aims to add matchmoving capabilities to the Blender 3D modelling application \todo{link}. 
+Examples of widely used matchmoving applications include 2d3's Boujou \update{link}{\footnote{\url{http://www.2d3.com}}} and Autodesk Matchmover \update{link}{\footnote{\url{http://www.autodesk.com}}}.
+The opensource libmv project \todo{link} aims to add matchmoving capabilities to the Blender 3D modelling application \update{link}{\footnote{\url{http://www.blender.org}}}.
 
 \subsection{Microsoft PhotoSynth} 
 
-Microsoft PhotoSynth, based on a research by Snavely, et al. \todo{citation}, has been publicly released in 2008. 
+Microsoft PhotoSynth, based on a research by Snavely, et al. \update{citation}{\cite{snavely2008}}, has been publicly released in 2008. 
 The software solution processes a set of unorganized pictures of a single scene and subsequently generates its 3D point cloud reconstruction. 
 The main purpose of the reconstruction is to allow the user to navigate between the photos in a novel way, which respects the physical proximity of the cameras taking the individual photos. 
 Perhaps most notably, the technology has been employed by the BBC and CNN. % TODO odkaz 
 Recently, the possibility to generate $360^\circ$ panoramas and to upload the input photos from a Windows 8 mobile phone has been added. 
 
 Microsoft PhotoSynth is a closed-source application with most of the computation running on Microsoft's servers. 
-\todo{pridat jak photosynth postupuje, vcetne odkazu na Snavelyho clanky}
+\update{pridat jak photosynth postupuje, vcetne odkazu na Snavelyho clanky}{
+Microsoft Photosynth extends the system called Photo Tourism developed by Noah Snavely and Steve Seitz \cite{snavely2007} \cite{snavely2006}.
+To obtain the accurate information about positions of cameras it uses transform invariant SIFT algorithm to detect interest points.
+For each pair of images the keypoints are matched using the approximate nearest neighbour package and by using RANSAC \cite{ransac} the fundamental matrix is estimated.}
+ 
+
+
 
 % One of the first applications that used to create a 3D model from a set of pictures of an object was Photosynth, designed by Microsoft in cooperation with the University of Washington \todo{citace jak na web PhotoSynthu tak na clanky Snavellyho; odstranil bych to, ze to byla jedna z prvnich aplikaci}. 
 % The algorithm is based on pattern recognition and generates a 3D model of a scene photographed object including the point cloud. 
@@ -85,7 +91,7 @@ We now briefly introduce the main \cv\ or Computer Graphics libraries that provi
 
 \subsection{OpenCV} 
 
-OpenCV \todo{link} is a cross--platform library originally developed by Intel. 
+OpenCV \update{link}{\footnote{\url{http://opencv.org}}} is a cross-platform library originally developed by Intel. 
 It provides an implementation of several hundreds of \cv\ related algorithms, 
 including, e.g., camera calibration routines, image segmentation algorithms, clustering algorithms, and linear algebra solvers.
 The library was originally written in pure C. 
@@ -97,6 +103,11 @@ The library provides interfaces for C, C++, Python and Java and suports the Wind
 \subsection{OpenGL} 
 
 \todo{mozna}
+OpenGL is an application programming interface for developing 2D and 3D graphics applications.
+It is an open cross-platform environment providing mainly rendering and visualization functions.
+In 2012 was released first version of OpenGL ES, a subset of OpenGL for embedded systems including mobile phones and consoles.
+
+
 
 % For our work is important that support for C, C++, Python and the Android platform is included in the library. 
 % OpenCV4Android offers us great equipment for image processing. 

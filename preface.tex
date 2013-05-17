@@ -19,9 +19,17 @@ As a result of this progress, various real-world applications for these algorith
 e.g., several camera trackers or products like Microsoft PhotoSynth. % TODO pridat referenci na web PhotoSynthu nebo na clanek
 
 Simultaneously, both the general availability and the computational power of smartphones have improved significantly.
-Mobile phones that employ the Linux-based Android software platform are currently very popular. \todo{uvest procentualni podil na trhu, pridat citaci}
+Mobile phones that employ the Linux-based Android software platform are currently very popular. \update{uvest procentualni podil na trhu, pridat citaci}{
+The Android market share increased to almost 69\% in the year 2012 \cite{market_share}. 
+See Figure \ref{fig:market_share} to compare it with the market share of the other mobile operating systems on the market in the recent two years.}
 A built–in camera and a relatively fast CPUs are very common in such mobile phones.
 % tahle veta by mohla jeste pokracovat ..., making it possible to...
+
+\begin{figure}[h]
+  \centering{\includegraphics[width=120mm]{img/market_android_table.jpg}}
+  \caption{Top five smartphone operating systems and their market share in 2011 and 2012.}
+  \label{fig:market_share}
+\end{figure}
 
 The goal of this work is to explore ways how to connect these two phenomena. 
 Our aim is to create an Android application that takes a set of photos using the phone's internal camera, applies a series of \cv\ algorithms to reconstruct the depth information, and visualizes the result using 3D graphics. 
@@ -29,11 +37,12 @@ Due to the inherent ambiguity of the problem, it is inevitable that our approach
 % TODO Tuhle vetu zatim vynechavam, protoze je moc odvazna... 
 % One of our main goals is to investigate how well the solving of such a computation-intesive problem can be done within the limits of a Java-based environment running on a mobile phone or a tablet computer.
 
-\todo{nasledujici vety by se mely primo odkazovat na sekce}
-The first part of this work analyses the problem, describes available software and gives an overview of programming libraries and languages that were used. 
-Secondly, we focus on the theoretical foundations of 3D reconstruction from image data. % and techniques connected to this topic.
+\update{nasledujici vety by se mely primo odkazovat na sekce}{}
+The first part of this work analyses the problem, describes available software and gives an overview of programming libraries and languages that were used (see chapter \ref{chap:overview}). 
+Secondly, we focus on the theoretical foundations of 3D reconstruction from image data (see chapter \ref{chap:notions} and \ref{chap:algorithms}). 
+Then we depict the basics of android development (chapter \ref{chap:android}).
 The next section is devoted to the implementation of our application.
-Finally, we evaluate and benchmark the resulting application. 
+Finally, we evaluate and benchmark the resulting application (chapter \ref{chap:implementation}).
 \todo{tady bychom urcite chteli explicitneji napsat, ze vysledkem budou i nejake datasety, ale to se zvladne az to budeme mit napsane}
 
 

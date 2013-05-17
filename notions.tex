@@ -1,12 +1,14 @@
 \chapter{Basic Notions} 
+\label{chap:notions}
 
 To make this work more self-contained, we briefly introduce basic notions and concepts used in the later chapters. 
-Details can be found in \todo{doplnit odkazy na nejaka skripta, klidne nekolik; jednim z nich by mel byt Hartley, Zisserman: Multiple View Geometry}.
+Details can be found in \update{doplnit odkazy na nejaka skripta, klidne nekolik; jednim z nich by mel byt Hartley, Zisserman: Multiple View Geometry}{\cite{multipleview}}.
 % TODO v tehle sekci ale chceme rozebirat jen matematicke a image processing pojmy, ne ty softwarove, coz je otazka, jestli bychom to nemeli nejak zminit... ale mozna ani ne... nevim
 
 \begin{framed} 
 % TODO 
 \todo{Co budeme potrebovat zavest:} 
+\update{nasledujici podkapitolky podle tohoto seznamu}{} 
 \begin{itemize} 
 \item convolution 
 \item image derivatives 
@@ -20,10 +22,169 @@ Details can be found in \todo{doplnit odkazy na nejaka skripta, klidne nekolik; 
 \end{itemize} 
 \end{framed} 
 
+\section{Convolution}
+
+\term{Convolution} is an operation on two functions used in signal processing in general.
+In image processing \term{convolution} performs applying some filter (kernel) over an image.
+The output of such \term{convolution} can be blurred or sharpened image for example.
+
+\begin{definition}
+\term{The convolution of functions $f$ and $g$} is an operation defined as:
+\begin{align*}(f\convolution g)(t)&=\inftyint f(\tau)g(t -\tau) d\tau.
+\end{align*}
+In image processing $f$ would represent the image function and $g$ would be the filter applied on it.
+\end{definition} 
+
+\section{Image derivatives}
+\label{sec:imder}
+\term{Image derivatives} are local derivatives of an image function.
+They are proper way how to express changes in an image.
+By a change in an image we assume an acute change of a pixel intensity that indicates presence of an edge.
+After derivation the change transforms to maxima of the image function.
+That is one of the methods how edges can be detected.
+In discrete space we can approximate derivatives by local differences as:
+\begin{align*}
+\imd{ \partial x}(x, y)& = I(x + 1, y) - I(x-1, y)\\
+\imd{ \partial y}(x, y)& = I(x, y + 1) - I(x, y - 1),
+\end{align*}
+where $I$ is the input image and \vect{(x, y)} are coordinates of the pixel.
+
+\section{Gaussian image derivatives}
+
+\update{}{k teto podkapitolce jsem cerpala z nejake prezentace, co jsem nasla na internetu. nejsem si jista, jestli jsem to spravne pochopila.}
+
+In image processing and \cv\ scale-space is a set of down-sampled and smoothed images.
+Formally, it is a group of derived signals $\L$ defined as \term{convoltion} of image function $\func$ and Gaussian kernel $\gauss$
+%\begin{align*}
+%\gauss = \frac{1}{2\pi t} e^{-(x^2+y^2)/2t}
+%\end{align*}
+so that
+\begin{align*}
+\L = \gauss \convolution \func,
+\end{align*}
+where $t$ is the particular scale.
+
+To this scale-space representation we can apply local derivatives at any scale.
+Equivalently, scale-space derivatives can be computed by convolving the original image $f$ with Gaussian derivative operators which are derivatives of the Gaussian function.
+For this reason they are often also referred to as \term{Gaussian derivatives}.
+
+\section{Sum of absolute differences}
+
+\term{Sum of absolute differences} describes the difference of intensities of particular areas of two images.
+In the context of image processing it is used to measure disparity of the areas and by minimizing the difference to find the best matching points.
+By computation of \term{sum of absolute differences} we can estimate the disparity map.
+
+\section{Entropy}
+
+In computer science, \term{entropy} (sometimes also called \term{Shannon entropy}) is a measurement of the uncertainty in the image values.
+\term{Entropy} can be also perceived as a measure of histogram dispersion.
+
+
+\begin{definition}
+The entropy $H$ of a random variable $X$ and a probability $P(X)$ is defined as
+\begin{align*}
+  H(X) = E[-\ln(P(X))] = - \sum_k{P(k)\log P(k)},
+\end{align*}
+where $E$ is expected value operator and $k$ is a possible value of the $X$ variable.
+\end{definition}
+
+\section{Mutual information}
+
+\term{Mutual information} measures the mutual dependence of two variables and says how much one random variable tells us about another.
+\begin{definition}
+\term{The mutual Information} of two variables $I_1$ and $I_2$ is a measure of uncertainty (entropy $H$) in a probability density function:
+\begin{align*}
+\MI{I_1, I_2} = \H{I_1} + \H{I_2} - \H{I_1, I_2}.
+\end{align*}  
+\end{definition}
+We can also perceive \term{mutual information} as a reduction in uncertainty about one random variable given knowledge of another.
+High mutual information indicates a large reduction in uncertainty; vice versa low mutual information indicates a small reduction.
+In the context of image processing high mutual information demonstrate high entropy and a white noise in an image.
+
+
+\section{Laplacian}
+
+In section \ref{sec:imder} we mentioned \term{image derivatives} that are useful for detection of high variation of intensity.
+After derivation they occurred as maxima of the image function.
+If we go even further and take the second derivative we realise that the intensity changes transform to zero.
+Considering n-dimensional space of the function, we get $n$ second partial derivatives.
+If we sum them we get the \term{Laplacian}.
+
+\begin{definition}
+The Laplacian in n-dimensional space is the divergence of a gradient of function $f$:
+\begin{align*}\nabla ^{2}f&= \sum_{i=0}^{n} \fpp{ \partial x_i^2 }.\end{align*}
+In image processing we usually consider 2-dimensional space, thus the \term{Laplacian} is
+\begin{align*}
+\nabla ^{2}f(x, y)&=\fpp{\partial x^2} + \fpp{\partial y^2}.
+\end{align*}
+\end{definition} 
+
+\section{Homogeneous coordinates}
+In Euclidean coordinate system infinity does not exist.
+However, many geometric concepts are simplified when infinity is included.
+An example of such a form of geometry that includes infinity is \term{projective geometry}.
+
+Suppose we have a point $(x, y)$ in Euclidean plane.
+This point in projective geometry is expressed by extending it to the triplet value of $(x, y, 1)$.
+Generally, a n-dimensional point in Euclidean space is represented as a point in a (n+1)-dimensional projective space.
+The point $(kx, ky, k)$ is certainly the same point as $(x, y, 1)$ for any $k \neq 0$.
+These are called \term{homogenous coordinates} of the point.
+To get back the Euclidean coordinates we simple divide $x$ and $y$ by $k$.
+We can notice that any of $(x, y)$ from Euclidean space corresponds to the point $(x, y, 0)$, because the operations $x/0$ and $y/0$ are undefined.
+This is how we get the point in infinity; points in infinity are those points which have zero as the last coordinate.
+
+
+\section{Projection camera model}
+
+\term{Projection camera model} represents a model of central perspective projection.
+It maps points from 3D (world) to 2D (image).
+
+In Figure \ref{fig:camera} we can see the camera geometry.
+The \term{camera centre} is placed at the coordinate origin.
+We should notice that the image plane is in front of camera.
+The line perpendicular to the \term{image plane} that origins in the centre is called \term{principal axis} of the camera and its intersection with the image plane is \term{principal point}.
+
+%\begin{align*}
+%\begin{bmatrix}
+ % x_1\\
+  %x_2\\
+  %x_3
+%\end{bmatrix}&= 
+%\T
+%\begin{bmatrix}
+ % X_1\\
+  %X_2\\
+  %X_3\\
+  %X_4
+%\end{bmatrix},
+%\end{align*}
+%where $\T$ is the transformation from homogenous coordinates to Euclidean space.
+\begin{figure}[h]
+  \label{fig:camera}
+  \centering{\includegraphics[width=96mm]{img/perspectivecamera.png}}
+  \caption{\todo{tento obrazek jsem stahla z googlu, mel by se nahradit}}
+\end{figure}
+
+\section{Fundamental matrix}
+
+In \cv\ \term{fundamental matrix} represents the relation of points between two stereo images.
+Suppose we have two stereo images and we choose a point $\x$ in the first one.
+The knowledge of its position constraints the position of the corresponding one in the second image.
+The corresponding point denoted by $\xd$ lies on the line defined by $\F\x$ where $\F$ is the fundamental matrix.
+This line is called \term{epipolar line}.
+
+\begin{definition}
+The \term{fundametal matrix $\F$} for a pair of stereo images is a $3 \times 3$ matrix which satisfies 
+\begin{align*}
+\xd^T \F \x = 0
+\end{align*}
+for corresponding points $\x$ and $\xd$.
+\end{definition}
+
 \section{Hessian matrix}
 
 % feature detectors and interest points descriptors employ the Hessian matrix of the image.
-The Hessian matrix describes a second-order behavior of a function around a particular point. 
+The Hessian matrix describes a second-order behaviour of a function around a particular point. 
 
 \begin{definition} 
 \term{The Hessian matrix of a function $f: \Rn \to \R$ at $\x \in \Rn$} is a matrix $H_f(\x)$ of the second order partial derivatives of $f$ evaluated at $\x$: %~=~(x_1, \ldots, x_n)$: 
@@ -68,7 +229,7 @@ Moreover, once we have calculated the integral image, only three integer operati
 of the original intensities inside any rectangular region (see Figure \ref{fig:integral}).
 
 \begin{figure}[h]
-  \centering{\includegraphics[width=96mm]{img/integral_image.png}}
-  \caption{The sum of any rectangular region can be calculated by only three additions. \todo{napsat konkretni vzorec}}
   \label{fig:integral}
-\end{figure}
+  \centering{\includegraphics[width=96mm]{img/integral_image.png}}
+  \caption{The sum of any rectangular region can be calculated by only three additions: \update{napsat konkretni vzorec}{$\sum = C - D - B + A$}.}
+ \end{figure}

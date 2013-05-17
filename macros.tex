@@ -6,6 +6,7 @@
 
 % TODO pred odevzdanim prace je nutne zkontrolovat, ze toto makro se uz v textu nevyskytuje
 \newcommand\todo[1]{(\textit{\underline{TODO:} #1.})}
+\newcommand\update[2]{(\textit{\underline{UPDATE:} #1.) #2}}
 
 % zkratka pro zvyrazneni nazvu tridy (pouzivane v kapitole OpenCV pro prehledne cteni o implementovanych tridach
 \newcommand{\stype}[1]{\texttt{#1}}	
@@ -22,8 +23,18 @@
 \def\Rn{\mathbf{R}^n} 
 \def\Rm{\mathbf{R}^m} 
 \def\x{\mathbf{x}}
+\def\xd{\mathbf{x'}}
 \def\K{K}
 \def\convolution{*}
+\def\F{\mathbf{F}}
+\def\T{\mathbf{T}}
+\def\MI #1 {MI_{#1}}
+\def\H #1 {H_{#1}}
+\def\L{L(x, y; t)}
+\def\func{f(x, y)}
+\def\gauss{g(x, y; t)}
 
 % obskurnejsi matematicke zkratky 
 \newcommand{\fpp}[1]{ \frac{ \partial^2 f }{ #1 } }
+\newcommand{\inftyint}{\int_{-\infty}^{+\infty}}	%integral
+\newcommand{\imd}[1]{ \frac{ \partial I }{ #1 } } 	%image derivatives

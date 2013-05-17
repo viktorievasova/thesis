@@ -1,12 +1,6 @@
 
-
-
-
-
-
-
-
 \chapter{Developing for Android}
+\label{chap:android}
 
 Android, Inc\@. was founded in October in 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White. 
 At first, the company planned to develop an operating system for digital cameras % but when they realised that the market is not large enough,
@@ -48,14 +42,15 @@ Above this level are the Android native libraries, which include graphics suppor
 They are written in C or C++ and called through a Java interface.
 The actual applications are running on the Dalvik Virtual Machine (DVM), which is an implementation of Java virtual machine optimized to low processing power and memory resources.
 % We should note that the virtual machine applications are running within is not Java virtual machine, but Dalvik Virtual machine.
-The Android runtime layer consists of this DVM and core Java libraries. \todo{nemeli bychom kapitalizovat Android Runtime Layer?}
+The Android Runtime Layer consists of this DVM and core Java libraries. \update{nemeli bychom kapitalizovat Android Runtime Layer?}{}
 The next level up is the Application Framework, which manages the basic functions of a phone. 
 Its major part is formed by the Activity Manager (managing the life cycle of applications) and various Content Providers (managing data sharing between the applications).
 Other notable parts are the Telephony Manager (handling voice calls), the Location Manager (specifying location using GPS or cell tower) and the Resource Manager.
 The top layer of the Android architecture is formed by the individual applications.
 Some of them are preinstalled and provided by Google and parts are third party applications created by the community.
-The structure of the system is illustrated on the diagram below. \todo{tady spis odkazat ``in Figure XY''}
+The structure of the system is illustrated in Figure \ref{fig:architecture} below. \update{tady spis odkazat ``in Figure XY''}{}
 \begin{figure}[h!]
+    \label{fig:architecture}
     \centering{\includegraphics[width=80mm]{img/software_layers.png}}
     \caption{The structure of Android architecture.}
 \end{figure}
