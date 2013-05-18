@@ -10,6 +10,7 @@ decided to focus on smartphones instead. % operating system.
 % The rival mobile phones operating systems were Symbian and Windows Mobile.
 % After four years with the financial aid of Google, Android was revealed.
 The first phone with Android operating system was sold in autumn 2008.
+\update{nebylo by lepsi tuhle informaci rict v uvodu, kdyz tam zminujeme, kdy byl prni telefon uveden?--presunuto}{It was G1 developed by HTC (also known as the HTC Dream) that was the first device running the Android operationg system on the market.}
 % Android is an open source operating system and the code is released.
 Majority of Android's code is released under a free license. 
 This allows developers to modify and freely distribute the software.
@@ -21,7 +22,6 @@ In this chapter we will introduce the Android operating system from programmers 
 Android is a product of a group developing open standards for mobile devices led by Google.
 The Open Handset Alliance includes mobile operators, software providers and device and component manufacturers such as
 T-Mobile, HTC, Sony, and others.
-The first handset device running the Android operating system on the market was G1 developed by HTC (also known as the HTC Dream). \todo{nebylo by lepsi tuhle informaci rict v uvodu, kdyz tam zminujeme, kdy byl prni telefon uveden?}
 % It was released and offered to T-Mobile costumers in 2008 and a half-year after T-Mobile USA announced it had sold one million G1s.
 
 The Android platform is a layered environment built upon the foundation of the Linux kernel.
@@ -55,12 +55,13 @@ The structure of the system is illustrated in Figure \ref{fig:architecture} belo
     \caption{The structure of Android architecture.}
 \end{figure}
 Android applications are written in the Java programming language and run within an instance of Dalvik Virtual Machine.
-A typical application is implemented using at least one activity. 
-An activity creates a window of the application and allows the developer to render the UI.
+\update{Proc jsme ted od vykreslovani GUI skocili zpatky k instalovani aplikace na zarizeni? Cekal bych, ze usporadani textu bude respektovat life cycle aplikace}{
+%A typical application is implemented using at least one activity. 
+%An activity creates a window of the application and allows the developer to render the UI.
 An inseparable part of the application is AndroidManifest\@.xml file containing necessary information how to properly install it to the device 
-including permissions the application needs to run. \todo{Proc jsme ted od vykreslovani GUI skocili zpatky k instalovani aplikace na zarizeni? Cekal bych, ze usporadani textu bude respektovat life cycle aplikace}
+including permissions the application needs to run.
 An example of such a permission is the ability to use the phone's camera or to access the Internet.
-All such requirements need to be explicitly listed in the manifest file.
+All such requirements need to be explicitly listed in the manifest file.}
 We concentrate more on activities and their development in the following sections.
 \begin{figure}[h!]
     \centering{\includegraphics[width=80mm]{img/dalvik.png}}
@@ -134,9 +135,11 @@ Each Activity we create must be defined in it. Basically, every component that i
 
 
 \section{The Activity Lifecycle}
-As we have already stated, a typical application consists of one or more activities.
-Such an application switches between different states of its life cycle. \todo{jak souvisi to, ze aplikace ma aktivity s tim, ze aplikace prechazi mezi nejakymi stavy? V dalsim se pak hovori stavech aktivit a ne aplikaci} 
-Compared to desktop platforms, the programmer has only limited control over the state transitions. \todo{napsat priklad toho, co se muze stat na Androidu a nemuze se stat na desktopu}
+%As we have already stated, a typical application consists of one or more activities.
+Any application switches between different states of its life cycle. 
+\update{jak souvisi to, ze aplikace ma aktivity s tim, ze aplikace prechazi mezi nejakymi stavy? V dalsim se pak hovori stavech aktivit a ne aplikaci}{}
+Compared to desktop platforms, the programmer has only limited control over the state transitions.
+\update{napsat priklad toho, co se muze stat na Androidu a nemuze se stat na desktopu}{On the desktop computer we can handle minimalizing or closing a window of an application or quite the entire app. This we can not affect on the Android device.}
 The life cycle is a collection of functions operating system calls on the application while it is running.
 
 There are five stages of the life of an application:
@@ -148,7 +151,7 @@ There are five stages of the life of an application:
 \item and the destroyed state.
 \end{itemize}
 
-The starting state and teh destroyed state are phases of the activity when it is not in the memory.
+The starting state and the destroyed state are phases of the activity when it is not in the memory.
 To launch the app, the method \emph{onCreate()} is called and eventually it is in a running state.
 When the activity is in a running state it is actually on the screen seen by the user.
 The activity is in foreground and handling all user interactions such as typing or touching the screen.
@@ -170,13 +173,73 @@ But when a dialog box appears or another Activity is on the top of this one but 
 When the application is not visible, but still in memory, it is in a stopped state.
 Then it is easy to bring it up to the front again or it can be destroyed, removed from the memory a brought to the destroyed state.
 
+\update{Pribyly nasledujici sekce - User Interface, Sensors a Data Storage}{}
+
 \section{User Interface}
 
+The user interface is part and parcel of an Android application.
+Basically, an application can not live without the user interface.
+
+All elements of the user interface are built using \term{View} or \term{ViewGroup} objects.
+By using them we also define the hierarchy of used components - a \term{View} can be nested within a different \term{View}.
+The layout describing the visual structure of the \term{Views} of the user interface is declared in separate XML file.
+Each \term{View} is represented as a XML element in it corresponding to the View class or subclass.
+The user interface can be declared also right in the code of an application. 
+Defining it separately make the user interface more flexible to changes without any modification of the code though.
+Also, the structure of XML corresponds to the structure of UI and makes it more inspectional and easier to debug.
+In the XML file declaring layout can be only one root element. 
+It must be a \term{View} or \term{ViewGroup} which is \term{LinearLayout} or \term{RelativeLayout} for example.
+\term{LinearLayout} is a layout that arranges the inner elements in a single row or a column depending on the set orientation, 
+while in \term{RelativeLayout} are positions of its children described in relation to parent or each other.
+
+The developer tools for Android gives us an option of creating other parts of UI beside sketching the layout such as \term{Menus}, \term{Action Bars}, \term{Dialogs} or \term{Toasts}.
+There are several types of \term{Menus} such as \term{options menu} or \term{context menu}.
+The \term{options menu} is an user interface component commonly used in many applications collecting menu items for an activity.
+It appears when a user touches the menu button.
+From the Android version 3\@.0 higher, options menu items are part of the action bar after touching the action overflow button.
+The \term{context menu} is a floating menu associated with an particular element in a view that is displayed after touching the element.
+
+\term{Action Bars} are a proper way how to navigate the user through the application.
+The \term{Action Bar} is located at the top of an activity and can display the activity title, icon or other actions and items.
+Some Android devices have a hardware action overflow button which opens the \term{options menu} at the bottom of an activity (as we mentioned above).
+\term{Action Bars} are superiors to \term{options menus} since an \term{Action Bar} is always visible while \term{options menu} shows only on the user request.
+
+\term{Dialog} is a small window informing the user about some action. 
+Unlike the \term{Toast} it usually requires the users action before continue by confirmation or giving some additional information.
+The \term{Toast} provides only feedback about some action in a small popup that disappears after a moment.
 
 
 \section{Sensors}
 
+Most Android devices have build in motion, environmental and position sensors.
+Motion sensors are sensors measuring rotation along three axes and give us an opportunity to detect motion, shaking or tilt.
+For measuring temperature, illumination, or humidity we use environmental sensors.
+Build-in magnetometers and orientation sensors provides information about current position of a device and can be used in application for GPS navigation or map browsers.
+We can access sensor events within an instance of  the \term{SensorManager} class.
+
 \section{Data Storage}
+
+We have several possibilities how to store our application data.
+The way we choose depends on the needs and the level of privacy.
+If we use private files in the application and do not want other application to access them, we prefer using the internal storage.
+We read and write private data simply by using \term{FileOutputStream} and \term{FileInputStream}.
+
+The media files such as pictures, video or audio records are usually expected to be shared and accessible from other applications.
+In that case the external storage is used.
+These files are readable and can be modified by user.
+Methods on the \term{Environment} class provide the access to the external storage.
+The function \term{getExternalStoragePublicDirectory()} depending on the argument given to it returns the path of the root directory where we can write our data, for example
+
+\begin{itemize}
+\item{../Music/}
+\item{../Pictures/}
+\item{../Movies/}
+\item{../Download/}
+\item{etc.}
+\end{itemize}
+
+As an argument we pass the type of the director we want to access, for example \term{Environment\@.DIRECTORYMUSIC}, \term{Environment. DIRECTORYPICTURES}, or \term{Environment. DIRECTORYMUSIC}. %todo: nepodarilo se mi napsat spravne typy jako"DIRECTORY_MUSIC" apod.
+
 
 
 
