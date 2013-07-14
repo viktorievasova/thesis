@@ -200,7 +200,8 @@ Once the correspondences are solved, we obtain a disparity map and it can be exp
 % Only these high distinctiveness points are matched, hence it is called sparse stereo matching.
 % The second way, dense stereo matching, is to match as many pixels as possible.
 
-In 1999 Sébastien Roy published an algorithm \cite{roy1998} \cite{roy1999} to solve the stereo correspondence problem formulated as a maxim-flow problem in a graph.
+In 1999 Sébastien Roy published an algorithm %\cite{roy1998} 
+\cite{roy1999} to solve the stereo correspondence problem formulated as a maxim-flow problem in a graph.
 This approach does not use of epipolar geometry as many other do.
 It solves efficiently maximum-flow and gives a coherent minimum-cut that presents a disparity surface for the whole image.
 This way provides more accurate depth map then the classic algorithms and the result is computed in shorter time in addition.

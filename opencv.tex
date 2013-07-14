@@ -1,14 +1,6 @@
 
-
-
-
-
-
-
-
-
-
 \chapter{OpenCV}
+\label{chap:aopencv}
 
 OpenCV (a short for Open Source Computer Vision) is an open source library covering the area of \cv.
 It was designed mainly for real-time applications and computational efficiency.
@@ -100,13 +92,39 @@ The section with functions for image processing and computer vision provides the
 \end{itemize}
 
 
-\section{OpenCV4Android}
-OpenCV library was written in C and this makes it portable to almost any commercial system.
-Since the version 2.0, OpenCV includes also the new interface written in C++. \todo{predchozi vetu nevim proc rikame v sekci o androidu}
-Later also wrappers for languages such as Java or Python have been developed. 
-Since 2010 OpenCV was also ported to the Android environment, it allows to use the full power of the library in the development of mobile applications.
-\todo{vubec cely tenhle odstavecek se hodi spis na zacatek kapitolky} 
 
-In comparison with desktop version it also includes the \stype{opencv.android} package containing all the additional functions for the Android platform.
-This package provides mainly an environment for work with camera by offering classes such as  \stype{NativeCameraView.java} or  \stype{CameraBridgeViewBase.java}.
+\section{OpenCV4Android}
+\update{uprava nasledujici kapitoly}{}
+
+%OpenCV library was written in C and this makes it portable to almost any commercial system.
+%Since the version 2.0, OpenCV includes also the new interface written in C++. \todo{predchozi vetu nevim proc rikame v sekci o androidu}
+%Later also wrappers for languages such as Java or Python have been developed. 
+Since 2010 OpenCV was also ported to the Android environment, it allows to use the full power of the library in the development of mobile applications.
+In this part we will list the important structures and functions of OpenCV4Android library used in our implementation.
+
+Images are commonly stored in \stype{Mat} structure from the \stype{org.opencv.core} package as a matrix of individual pixels of the image.
+For reading and writing images from saved files, we can use \stype{imread(String filename)} and \stype{imwrite(String filename)} functions from the \stype{org.opencv.highgui} package.
+
+In comparison with desktop version OpenCV4Android also includes the \stype{opencv.android} package containing all the additional functions for the Android platform.
+This package provides mainly an environment for work with camera by offering classes such as \stype{NativeCameraView.java} or \stype{CameraBridgeViewBase.java}.
+It controls the frame process, camera adjustments and drawing the resulting frame to the screen.
+
+The following packages contain basic methods used in image processing and implementations of commonly used algorithms (some of them we described in chapter \ref{chap:algorithms}):
+\begin{itemize}
+  \item \stype{org.opencv.imgproc},
+  \item \stype{org.opencv.features2d},
+  \item \stype{org.opencv.calib3d}.
+\end{itemize}
+
+In the image processing package are functions for image scaling (\stype{Imgproc.pyrDown()}, \stype{Imgproc.pyrUp()}), bluring image (\stype{Imgproc.GaussianBlur()}), histogram calculation (\stype{Imgproc.calcHist()}) 
+or methods for converting images between different colour definitions (\stype{Imgproc.cvtColor()}).
+
+%In chapter \ref{chap:algorithms}, we described SIFT and SURF keypoint detector and descriptor. 
+%OpenCV library provides the implementation of these algorithms.
+With an instance of \stype{FeatureDetector.java} and \stype{DescriptorExtractor.java} classes and calling \stype{compute()} function we can detect keypoints in a set of images.
+There are several options for selecting descriptor type (such as \stype{BRIEF}, \stype{BRIS}, \stype{FREAK}, \stype{ORB}, \stype{SIFT}) and algorithm for keypoint detection (\stype{BRISK}, \stype{DENSE}, \stype{FAST}, \stype{ORB}, \stype{HARRIS}, \stype{STAR}).
+All keypoints can be stored in a \stype{KeyPoint} structure.
+Since the keypoints in all images are detected, we can match them using \stype{DescriptorMatcher.java} class.
+
+The \stype{StereoSGBM.java} class included in \stype{org.opencv.calib3d} package is defined for computing stereo correspondence using the semi-global block matching algorithm, which is a modification of algorithm by Heiko Hirschmüller \cite{hirschmuller2008}.
 
