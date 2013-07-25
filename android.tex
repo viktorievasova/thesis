@@ -15,7 +15,7 @@ The first phone with Android operating system was sold in autumn 2008.
 Majority of Android's code is released under a free license. 
 This allows developers to modify and freely distribute the software.
 Due to this, Android became the most common operating system for smartphones.
-In this chapter we will introduce the Android operating system from programmers perspective and give a brief description of how to implement an Android application.
+In this chapter we introduce the Android operating system from programmers perspective and give a brief description of how to implement an Android application.
 
 \section{Introduction to Android development}
 
@@ -102,14 +102,14 @@ We can divide the basic building blocks into four different groups:
 
 \emph{Activity} is a screen providing the user interface.
 In the activity a developer place elements such as Views, Lists, Buttons, Labels etc. 
-The layout of an activity and the widgets placed in the window are described in a separate XML file (we will reveal more about user interface later).
+The layout of an activity and the widgets placed in the window are described in a separate XML file (we reveal more about user interface later).
 Most of applications consist of more than one bounded activities.
 Although the activities form one application, they are all independent from each other.
 If another application has a permission to do so, it can start an activity of a different app.
 
 Usually in a application there is a one main activity that shows up to the user at first after launching it.
 To this one are all other activities linked.
-Each Activity in android will be subclass of Activity class defined in Android SDK.
+Each activity in android will be subclass of Activity class defined in Android SDK.
 
 A \emph{service} is a component used to perform operations in background.
 It can be invoked by an activity for example.
@@ -130,16 +130,18 @@ An intent is a message to the system to invoke new activity, service or a broadc
 It is a component activating mechanism in Android.
 
 A very important part of an application is AndroidManifest\@.xml file, where are specified all permissions of the application.
-Each Activity we create must be defined in it. Basically, every component that is used in the application must be declared in the manifest.
+Each activity we create must be defined in it. Basically, every component that is used in the application must be declared in the manifest.
 %code example
 
 
 \section{The Activity Lifecycle}
+\label{sec:lifecycle}
+
 %As we have already stated, a typical application consists of one or more activities.
 Any application switches between different states of its life cycle. 
 \update{jak souvisi to, ze aplikace ma aktivity s tim, ze aplikace prechazi mezi nejakymi stavy? V dalsim se pak hovori stavech aktivit a ne aplikaci}{}
 Compared to desktop platforms, the programmer has only limited control over the state transitions.
-\update{napsat priklad toho, co se muze stat na Androidu a nemuze se stat na desktopu}{On the desktop computer we can handle minimalizing or closing a window of an application or quite the entire app. This we can not affect on the Android device.}
+\update{napsat priklad toho, co se muze stat na Androidu a nemuze se stat na desktopu}{On the desktop computer we can handle minimalizing or closing a window of an application or quit the entire app. This we can not affect on the Android device.}
 The life cycle is a collection of functions operating system calls on the application while it is running.
 
 There are five stages of the life of an application:
@@ -168,14 +170,17 @@ because it is probable that it is going to be called back in a while and we don'
 
 The application is paused (in a paused state) when it is not interacting with user at the moment, but still visible on the screen.
 This state does not occur that often, because most of applications cover entire screen.
-But when a dialog box appears or another Activity is on the top of this one but not hiding it all, the underlying activity is partly visible and it is paused.
+But when a dialog box appears or another activity is on the top of this one but not hiding it all, the underlying activity is partly visible and it is paused.
 
 When the application is not visible, but still in memory, it is in a stopped state.
 Then it is easy to bring it up to the front again or it can be destroyed, removed from the memory a brought to the destroyed state.
 
 \update{Pribyly nasledujici sekce - User Interface, Sensors a Data Storage}{}
 
+
+
 \section{User Interface}
+\label{sec:ui}
 
 The user interface is part and parcel of an Android application.
 Basically, an application can not live without the user interface.
@@ -239,6 +244,170 @@ The function \term{getExternalStoragePublicDirectory()} depending on the argumen
 \end{itemize}
 
 As an argument we pass the type of the director we want to access, for example \term{Environment\@.DIRECTORYMUSIC}, \term{Environment. DIRECTORYPICTURES}, or \term{Environment. DIRECTORYMUSIC}. %todo: nepodarilo se mi napsat spravne typy jako"DIRECTORY_MUSIC" apod.
+
+
+\section{Developing Android Application}
+
+In this section we give an outline of implementing the bases for an Android application.
+
+When developing an Android application usually we need to define some user interface.
+Some of the components of the UI are described in section \ref{sec:ui}.
+The layout of all components is defined in a .xml file.
+All .xml files are stored in \term{/res/layout} directory.
+
+The file consists of one root and other descendant xml elements.
+Each element is described by the inner attributes of it.
+We can see an example of such layout below.
+  
+
+\begin{lstlisting}
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <org.opencv.android.NativeCameraView
+        android:id="@+id/camera_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    
+    <RelativeLayout
+	    android:layout_width="200dp"
+	    android:layout_height="match_parent"
+	    android:layout_margin="10dp"
+	    android:layout_centerInParent="true">
+	    
+        <Button
+	        android:id="@+id/captureButton"
+	        android:layout_width="90dp"
+	        android:layout_height="90dp"
+	        android:layout_alignParentBottom="true"
+	        android:layout_centerHorizontal="true"
+	        android:background="@drawable/circle_button"
+	        android:onClick="callTakePicture"/>
+        
+        <Button
+	        android:id="@+id/startCapturingButton"
+	        android:layout_width="90dp"
+	        android:layout_height="90dp"
+	        android:layout_alignParentBottom="true"
+	        android:layout_centerHorizontal="true"
+	        android:background="@drawable/circle_button"
+	        android:onClick="start_stopAutoCapturing"
+	        android:visibility="invisible"/>
+	          
+	    <ToggleButton
+	        android:id="@+id/toggleAutoCaptureButton"
+              android:layout_width="wrap_content" 
+              android:layout_height="wrap_content" 
+              android:layout_alignParentTop="true"
+              android:layout_centerHorizontal="true"
+	        android:textOn="AutoCapture on"
+	        android:textOff="AutoCapture off"	    
+	        android:onClick="autoCaptureStateChanged"/>
+
+	    <TextView
+	        android:id="@+id/startCapturing_textView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/captureButton"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/startcapturing_text"
+	        android:visibility="invisible"/>
+
+	</RelativeLayout>
+	
+</RelativeLayout>
+
+\end{lstlisting}
+
+In our example the root element is \term{RelativeLayout} element which allows us to describe the relative position to each other or to a parent.
+Inside the \term{RelativeLayout} we can find \term{org.opencv.android.NativeCameraView} which is an element of OpenCV library used for camera view and 
+another \term{RelativeLayout} with \term{Buttons},  a \term{ToggleButton} and a \term{TextView}.
+All of the elements have defined the width an height by using \term{android:layoutwidth} and \term{android:layoutwidth} attributes.
+The value of these attributes can be \term{matchparent}or \term{wrapcontent} or the specific number of dp units.
+
+It is also possible to define different layout of one activity depending on the screen orientation.
+If we need to define different layout for landscape orientation, we save a xml file of the same name with new layout into \term{res/layout-land} folder.
+
+In the \term{src} folder are stored all .java files representing activities or classes.
+Every Android application has at least one activity which is called by the system when the application is launched.
+Due to the activity lifecycle (see \ref{sec:lifecycle}) it is necessary to implement the following methods:
+
+\begin{itemize}
+\item \term{onCreate()},
+\item \term{onPause()},
+\item \term{onResume()}.
+\end{itemize}
+
+The \term{onCreate()} method handles what happens when the activity is started.
+Usually only the basic startup instructions should be completed in this method, for example setting the layout or initialisation of some class variables.
+The particular layout into an activity is loaded by \term{setContentView(name-of-the-xml-file)}.
+We can see an example of \term{onCreate()} method below.
+
+\begin{lstlisting}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_gallery);
+        
+        adapter = new Adapter(this);
+        ArrayList<GridImage> db_update = new ArrayList<GridImage>();
+        for (String s : files) {
+          ...
+        }
+        ...
+  }
+\end{lstlisting}
+
+Depending on the needs of our application, we can add some code into the other overriding methods handling the activity lifecycle.
+
+\begin{lstlisting}
+  
+  @Override
+  public void onPause(){
+      super.onPause();
+      ...
+  }
+	
+  @Override
+  public void onResume(){
+      super.onResume();
+      ...
+  }
+      
+\end{lstlisting}
+
+To make our user interface interactive we need to set some functions that will be executed when clicking on the elements of the user interface.
+This can be done either in the xml file or in the code of the activity.
+To demonstrate these two approaches, we added an example:
+
+\begin{lstlisting}
+/* This is the definition of a button in the xml file. 
+    When clicking on the button, takePicture() method will be executed.
+    The method must be defined in the .java file of the activity. */
+<Button  
+  ...
+  android:onClick="takePicture"
+  ... />
+  
+/* This is the example how to define 
+    the method directly in the code. */
+
+Button my_button = (Button)findViewById(R.id.button);
+my_button.setOnClickListener( new View.OnClickListener() {
+    
+});
+  
+ 
+  
+\end{lstlisting}
+
+
+
+
+
 
 
 
