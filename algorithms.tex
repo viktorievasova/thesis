@@ -16,7 +16,7 @@ In the latter, the objective is to obtain a correspondence in the second image f
 % We can either aim to establish correspondences between a restricted set of primitives, for example just the most stable looking corners detected in the images, or we can aim to establish a correspondence from (almost) every pixel of the reference image. 
 % The former approach is called \term{sparse correspondence problem} 
 
-We describe two techniques solving the sparse correspondence problem -- the SIFT \cite{lowe1999} and SURF \cite{surf2006} feature detectors/descriptors -- and then introduce a max-flow algorithm \cite{roy1999} for the dense correspondence problem. \update{potrebujeme urcite pridat citace}{/nevim, jestli to je takto dostacujici/}
+We describe two techniques solving the sparse correspondence problem -- the SIFT \cite{lowe1999} and SURF \cite{surf2006} feature detectors/descriptors -- and then introduce a max-flow algorithm \cite{roy1999} for the dense correspondence problem. %%% optical flow 
 
 % We describe three techniques -- the SIFT feature detector/descriptor, the SURF feature detector/descriptor, and the Graph-cut algorithm. \todo{potrebujeme urcite pridat citace}
 % SIFT and SURF are the most used algorithms to detect features.
@@ -26,37 +26,37 @@ If the feature detection is repeatable, most of the features should be detected 
 Then, for each feature a \term{descriptor} is generated, typically a high-dimensional vector. 
 This descriptor is constructed in a way ensuring invariance to various image transformations. 
 For instance, the SIFT descriptor is invariant to translation, rotation, scaling, and image noise. 
-Thus, applying any of those transformations to the image should leave the descriptors unaffected, making it possible to match image features using the Euclidean metric. 
-The SIFT descriptor is also partially invariant to affine transformations and illumination changes, enabling us to perform matching of images capturing the scene slightly different viewpoints.
+Thus, applying any of those transformations to the image should leave the descriptors unaffected, making it possible to match image features using Euclidean metric. 
+The SIFT descriptor is also partially invariant to illumination changes and to affine transformations, the latter enabling us to perform matching of images capturing the scene from slightly different viewpoints.
 % Achieving full invariance to projective transformations is typically too computationally prohibitive.  
 % Usually, a descriptor is affinely invariant, meaning .
 % Hence for a feature from different viewpoints should be generated the same vector.
 % Since the descriptors are computed, we can match them between a pair of images. 
 % Due to the fact that our descriptors are vectors, we can match them according to the distance in the space, using Euclidean distance for example.
  
-\section{Scale-invariant feature transform}
-Scale-invariant feature transform (SIFT) was introduced by David Lowe in \cite{lowe1999}, building on a previous work by Lindeberg \cite{lindeberg1998}.  % \todo{pridani citace naLindeberg, T. 1994. Scale-space theory: A basic tool for analysing structures at different scales. Journal of Applied Statistics, 21(2):224-270.} 
+\section{Scale-Invariant Feature Transform}
+\label{sec:sift}
+Scale-invariant feature transform (SIFT) was introduced by Lowe in \cite{lowe1999}, building on a previous work by Lindeberg \cite{lindeberg1998}. 
 The paper describes both a feature detector and descriptor.
 To this day, SIFT remains a popular choice for applications such as panorama stitching and object detection.
-% It is able to identify objects even among clutter in noisy images. % TODO tady si nejsem jisty, jestli v tomhle miste v textu je to pro nas relevantni; mozna by se to dalo zminit, kdyby se to prepsalo trochu jinak
+It is able to detect objects in images even in the presence of clutter. 
 % As already mentioned, the SIFT feature descriptor 
 
-The features are detected from a grayscale version of the input photo and tend to match centers of blob-like image structures. \todo{neni tu urcita nesourodost v dulezitosti te prvni informace (grayscale obrazek) a druhe informace (to, co to detekuje)? pripada mi, ze to druhe je mnohem ``globalnejsi'' informace}
-Each feature is assigned orientation and scale, which is used to establish a reference frame for the construction of the descriptor. 
+The features are detected in a grayscale version of the input photo and tend to match centers of blob-like image structures.
+Each feature is assigned an orientation and a scale, which is used to establish a reference frame for the construction of the descriptor. 
 The SIFT feature descriptor is a 128-dimensional vector determined by the gradients around the descriptor.
-Since the computation of the descriptor is performed using the abovementioned local reference frame, the resulting descriptor is invariant to transformations that affect this reference frame in a covariant manner. % but only partially invariant to affine transformations and illumination changes.
-We now proceed to describe both the detection and descriptor construction steps in more detail. 
-% Hence the best results are given on the input images that do not differ much in the orientation.
+Since the computation of the descriptor is performed using the abovementioned local reference frame, the resulting descriptor is invariant to transformations that affect this reference frame in a covariant manner but only partially invariant to affine transformations and illumination changes.
+We now proceed to describe both the detection and the descriptor construction steps in more detail. 
 
 The feature detection starts by creating the scale-space of the input image, 
 % First step to reach the set of keypoints is creating a scale-space of the input image.
-which is a series of images constructed by blurring the original one using Gaussial filters of increasing size. 
+which is a series of images constructed by blurring the original one using Gaussian filters of increasing variance. 
 (The process is performed on a downsampled image for larger kernel sizes to increase computational efficiency.)
 % The original image is blurred several times with larger and larger Gaussian kernel, then it is downsized and this process is applied again to the subsampled image. 
 After constructing the scale-space, we subtract neighbouring images of the scale-space to obtain a series of differences of Gaussians (DoG) images. 
 A DoG image is thus equal to: 
 \[ D_{\sigma_1, \sigma_2}(x, y) = G_{\sigma_1} \convolution I(x, y) - G_{\sigma_2} \convolution I(x, y), \]
-where $I(x, y)$ is the original image, $\convolution$ presents convolution, $G_{\sigma_i}$ is a Gaussian kernel, and $\sigma_i$ is the its variance. 
+where $I(x, y)$ is the original image, $\convolution$ presents convolution, $G_{\sigma_i}$ is a Gaussian kernel, and $\sigma_i$ is the its deviation. 
 % TODO mozna detailneji: In our case, $\sigma_1$ and $\sigma_2$ are the kernel sizes of the neighbouring ...
 Hence
 \[
@@ -66,7 +66,7 @@ D_{\sigma_1, \sigma_2}(x, y) =
 \left( \frac{1}{\sqrt{2\pi \sigma _2^{2}}} \cdot e^{-\frac{x^{2}+y^{2}}{2\sigma_2^{2}} } \right )
  \right ] * I(x, y).
 \]
-\todo{nasledujici vete bohuzel vubec nerozumim} These convolved images are grouped by octave, where an octave corresponds to doubling value of scale $\mathb{\sigma}$.
+\todo{nasledujici vete bohuzel vubec nerozumim} These convolved images are grouped by octave, where an octave corresponds to the doubling of $\mathb{\sigma}$.
 
 \todo{nejak v tom textu budeme muset zjednotit feature/keypoint} We can now define candidate keypoints as local maxima and minima of $D_{\sigma_1,\sigma_2}(x, y)$.
 This is done by comparing each pixel with its neighbouring pixels and also with the corresponding pixels in neighbouring DoG images. 
@@ -75,40 +75,35 @@ These are exactly the areas we are looking for -- spots of high contrast. % as i
 % TODO example to show black and white area in DoG image + explanation
 
 Usually, the detection of scale-space extrema results is a large number of candidate keypoints.
-However, some of them are local extrema created by image noise or responses of the operator along edges. 
+However, some of them are local extrema created by image noise or the responses of the operator along edges. 
 Such structures are unstable and should be discarded from the set of candidate keypoints.
 This is performed by fitting a quadratic function to the DoG data and examining its shape. 
 If the function is too shallow or narrow, the candidate keypoint is discarded. 
-\todo{ted konkretne napsat, jak je ta kvadraticka funkce odvozena; jeji parametry by mely byt $x, y$; $\sigma$ nejspis ne}
-For each candidate we perform an interpolation of nearby image data. % to estimate its position.
+For each candidate we perform an interpolation of nearby image data.
 This is done using quadratic Taylor expansion of the DoG function around the detected point:
 \[
 D(\mathbf{x}) = D + \frac{\partial D^{T}}{\partial \mathbf{x}}\mathbf{x} + \frac{1}{2}\mathbf{x^{T}}\frac{\partial ^{2}D}{\partial \mathbf{x^{2}}}\mathbf{x}
 \]
-where $\mathb{\mathbf{x} = (x, y, \sigma)}$ is the offset from the point.
-If the offset value is less than $\mathb{0.03}$, it indicates low contrast and a high probability of affection by noise or of corresponding to edges and the candidate is discarded.
+where $\mathbf{x} = (x, y)$ is the offset from the point.
+If the offset value is less than $0.03$, it indicates low contrast and a high probability of being affected by noise and the candidate is discarded.
 Otherwise we keep the keypoint.
-\todo{az po tohle misto bychom to meli od predchoziho TODO prepsat}
 
 The next step is to analyse the area around individual keypoints to generate the descriptor. 
-Local scale of the keypoint is determined by the level of scale-space in which the keypoint was detected. 
+The local scale of the keypoint is determined by the level of scale-space in which the keypoint was detected. \todo{urcite je to jeste podle neceho dalsiho}
 To achieve invariance to rotation, local orientation must be determined as well. 
 First, we compute a histogram of orientations of image gradients around the keypoints location.
-% TODO neni tohle neco trochu jineho? The nearby area is divided to 4x4 subregions and for each subregion is computed a histogram of 8 gradient values.
 The peaks of the histogram represent dominant orientations.
 The orientations corresponding to the highest peak are assigned to the feature. 
 If there are several peaks of magnitude within 80\% of the highest peak, mutiple keypoints are generated -- one for each such orientation.
 
-\todo{konstrukci deskriptoru bude nutne popsat o malinko vic} We create the descriptor using the gradient magnitudes of these regions.
-For a feature there are sixteen subregions, each with eight values of a histogram, that results in a 128-dimensional vector.
+The descriptor is then constructed by considering several histograms in the four quadrants of the reference frame of the keypoint. 
+Typically, each quadrant is divided into four subregions. 
+In each of the resulting sixteen subregions, we construct a histogram of orientations of gradients sampled regularly in the subregion. 
+Concatenating the values in these histograms results in a 128-dimensional vector.
 
-% TODO matchovani budeme asi muset rozebrat detailneji, uvidime podle situace, zatim bych to nechal byt
-% All extracted keypoints are stored in a database; the last step is matching them.
-% Typically, we do this by taking one feature and looking for the nearest (in the meaning of Euclidian distance) vector descriptor in the second image.
-%% example of successful application of sift
+\section{Speeded-Up Robust Features}
 
-\section{Speeded Up Robust Features}
-Another popular feature detector/descriptor is the Speeded Up Robust Features (SURF) algorithm, introduced by Herbert Bay et al. \cite{surf2006}. 
+Another popular feature detector/descriptor is the Speeded Up Robust Features (SURF) algorithm, introduced by Bay et al. \cite{surf2006}. 
 It is influenced by the SIFT algorithm described above and is based on the computation of Haar wavelet responses and Hessian-matrix approximation. 
 Similarly to SIFT, keypoints are again detected in a scale-space to achieve invariance to scaling. 
 % To build a robust descriptor we need to detect keypoints that are invariant to scale thus we create a scale-space.
@@ -130,26 +125,26 @@ L_{xx}(\x, \sigma) = \frac{\partial ^{2}}{\partial x^{2}}g(\sigma) * I
 \]
 and similarly for $L_{xy}$ and $L_{yy}$
 \[
-L_{xy}(\x, \sigma) = \frac{\partial ^{2}}{\partial x \partial y}g(\sigma) * I, 
-L_{xx}(\x, \sigma) = \frac{\partial ^{2}}{\partial y^{2}}g(\sigma) * I.
+L_{xy}(\x, \sigma) = \Big(\frac{\partial ^{2}}{\partial x \partial y}g(x, y)\Big)(\sigma) * I, 
+L_{xx}(\x, \sigma) = \Big(\frac{\partial ^{2}}{\partial y^{2}}g(x, y)\Big)(\sigma) * I.
 \]
-\todo{radsi bych se tomu vektoru x vyhnul a napsal x, y -- kvuli tem parcialnim derivacim; hlavne dejme pozor, abychom pouzivali jednotne znaceni tech derivaci -- asi bude nejlepsi nejdriv napsat podkapitolku o tom, co je Gaussovska derivace}
+\todo{radsi bych se tomu vektoru x vyhnul a napsal x, y -- kvuli tem parcialnim derivacim; hlavne dejme pozor, abychom pouzivali jednotne znaceni tech derivaci -- stejne jako v podkapitole o tom, co je Gaussovska derivace}
 
 % Since the Gaussian is considered as over-rated, in this approach we use box-filters instead and obtain speeded-up variation.
 A box filter approximation of a convolution with a Gaussian-derivative kernel can be computed quickly using integral images. 
-\todo{potrebujeme nekde rict, jak presne se to aproximuje, nejlip obrazkem}
+\todo{mozna nekde rict, jak presne se to aproximuje, nejlip obrazkem; asi by to mohlo byt v sekci o integralnim obrazu}
 % The size of a box filter corresponds to the size of the kernel. 
 The approximations are computed for every scale of the scale-space and 
 the points that are simultaneously local extrema of both the determinant and the trace of the Hessian matrix are chosen as candidate keypoints. 
-The trace of Hessian matrix corresponds to the Laplacian of Gaussians (LoG) \todo{meli bychom rict LoG ceho}.
-If we denote those approximating box filters as $D_{xx}$, $D_{yy}$ and $D_{xy}$, we get the determinant value
+The trace of the Hessian matrix corresponds to the Laplacian of Gaussians (LoG) \todo{meli bychom rict LoG ceho}.
+If we denote the results of applying the above-mentioned box filters as $D_{xx}$, $D_{yy}$ and $D_{xy}$, we get: 
 \[
 \det(H) = D_{xx} D_{yy} - \omega^{2} D_{xy}^{2}.
 \]
-\todo{opet musime presne definovat, co je $D_{xx}$ a podobne}
+\todo{porad neni uplne dobre definovno, co je to ten box filter; idealni by bylo pridat to do sekce o integralnim obrazu}
 
-The SURF descriptor is a high-dimensional vector consisting of the sum of the Haar wavelet responses around the point of interest. % TODO skutecne sum? mozna mi neni jasne, v jakem smyslu
-The vector describes the distribution of the intensity within the neighbourhood of the keypoint. \todo{Proc v tehle vete rikame neco, co by melo byt ekvivalentni druhe polovine predchozi vety? Obe se tvari, jako ze rikaji, cim je tvoreny ten vektor.}
+Similarly to SIFT, the SURF descriptor is a vector describing the distribution of intensity values within the neighbourhood of the keypoint. 
+The difference lies mainly in the fact that the SURF descriptor is constructed using Haar wavelet responses around the point of interest. % TODO skutecne sum? mozna mi neni jasne, v jakem smyslu
 At first, to be invariant to image rotation, a dominant orientation is established for each detected keypoint. 
 The Haar wavelet responses in $x$ and $y$ direction are calculated 
 and they are summed within a sliding orientation window of size $\mathb{\frac{\pi}{3}}$ afterwards. \todo{tady by mi nebylo jasne, co se tam s tim sliding window dela; v tuhle chvili mam v ruce dve cisla, hodnotu derivace podle x a podle y -- jak do toho vstupuje sliding window?}
@@ -157,16 +152,14 @@ The summed responses yield a local orientation vector. \todo{jenom jeden vektor?
 The longest such vector is used to establish the orientation of the feature. 
 
 % The first step to extract the descriptor is constructing a square region around the keypoint aligned with dominant orientation.
-Similarly to the SIFT algorithm, the local orientation and scale is used to obtain a reference frame utilised in the construction of the descriptor. 
-The size of the inspected region around the keypoint is $20s$, where $s$ is the scale where it was detected. \todo{nemelo by $s$ byt nejak svazane s rozptylem $\sigma$?}
+The local orientation and scale is again used to obtain a reference frame ensuring that the resulting descriptor is not affected by rotation and scaling of the input image. 
+The size of the inspected region around the keypoint is set to $20s$, where $s$ is the scale where it was detected. \todo{nemelo by $s$ byt nejak svazane s rozptylem $\sigma$?}
 We split the region into $4 \times 4$ regular square subregions and for each of them we compute Haar wavelet responses $d_x$ and $d_y$
-at 5 x 5 evenly spaced sample points inside. \todo{tady porad rikame ``pocitame Haar wavelet responses'' ale jde nam o to vypocitat ty derivace; ja bych to napsal tak, ze se na zacatku nadefinuji ty derivace aproximovane temi integral image a pak uz se jen pouziva dokola odkazuje se na to nejakym konkretnejsim terminem} 
-The sum of the responses for $d_x$ and $d_y$ and their absolute values
-$|d_x|$, $|d_y|$ separately results in a descriptor 
-$v = (\sum{d_x}, \sum{d_y}, \sum{|d_x|}, \sum{|d_y|})$ for each subregion.
-Concatenating this for all 4 x 4 subregions gives 64-dimensional vector descriptor.
+in a $5 \times 5$ grid. \todo{tady porad rikame ``pocitame Haar wavelet responses'' ale jde nam o to vypocitat ty derivace; ja bych to napsal tak, ze se na zacatku nadefinuji ty derivace aproximovane temi integral image a pak uz se jen pouziva dokola odkazuje se na to nejakym konkretnejsim terminem; navic mi neni jasne, jaky je rozdil mezi temi box filtery a Haar wavelety} 
+The sum of the responses for $d_x$ and $d_y$ and their absolute values $|d_x|$, $|d_y|$ separately results in a descriptor $v = (\sum{d_x}, \sum{d_y}, \sum{|d_x|}, \sum{|d_y|})$ for each subregion.
+Concatenating this for all $4 \times 4$ subregions gives $64$-dimensional vector descriptor.
 
-Matching SURF descriptors between two images can be speeded-up by including the trace of Hessian (Laplacian) to the process of finding corresponding keypoints.
+Matching the SURF descriptors between two images can be speeded-up by including the trace of the Hessian (Laplacian) to the process of finding corresponding keypoints.
 We exploit the sign of Laplacian that distinguishes bright blobs on dark background from the reverse situation.
 In the matching stage we compare only features if they have the same sign -- type of contrast. 
 This costs no additional computation time since this quantity has already been computed at a previous stage.
@@ -174,25 +167,24 @@ This costs no additional computation time since this quantity has already been c
 \section{SIFT vs. SURF}
 Both SIFT and SURF are popular feature descriptors based on the distribution of intensity around the interest point.
 % TODO: kdyz uz bysme nasledujici chteli tvrdit, je nutne odcitovat nejaky benchmarkovaci paper: SIFT used to be evaluated as the most robust and distinctive descriptor for feature matching.
-SURF has been shown to have similar performance to SIFT, but being much faster. \todo{mozna uvest jak se to chova nasich datech nebo i zminit presneji jak to je popsane v uvodnim clanku, nebo odkazat na nejakou studii porovnavajici ruzdne detektory/deskriptory}
-The results of research in \cite{surf2006} point out the fast computation of a descriptor.
+SURF has been shown to have similar performance to SIFT, but being much faster. \todo{odkaz na nejakou studii porovnavajici ruzne detektory/deskriptory}
+The work \cite{surf2006} highlights the fast computation of the descriptor.
 SURF describes image three times faster than SIFT. \todo{jestli je tohle napsane v tom puvodnim clanku, tak ty predchozi vety spojme a napisme to tak, at ta informace z toho je patrna}
-The key to the speed is using integral images. 
-Also, the SURF descriptor is a 64-dimensional vector, enabling faster computation of Euclidean distance between the descriptors compared to the 128-dimensional SIFT descriptors. % in the comparison to 128 integers describing SIFT feature.
+The element enabling this speed-up are the approximations using integral images. 
+Also, the SURF descriptor is a 64-dimensional vector, enabling faster computation of the Euclidean distance between the descriptors compared to the 128-dimensional SIFT descriptors. % in the comparison to 128 integers describing SIFT feature.
 % Hence the SIFT matching costs more calculation time.
-Furthermore, due to the global integration of SURF-descriptor, it stays more robust to various perturbations than the SIFT descriptor. \todo{potrebujeme napsat presneji nebo vynechat}
+Furthermore, due to the global integration of the SURF-descriptor, it stays more robust to various perturbations than the SIFT descriptor. \todo{potrebujeme napsat presneji, zejmena by se hodil odkaz na to, odkad to tvrzeni je cerpano}
 
-SURF offers invariance to rotation and image blurring.
+SURF offers invariance to rotation and limited levels of image blurring.
 On the other hand, SIFT is more robust under illumination changes and viewpoint changes. \todo{znovu neni jasne, jestli popisujeme vlastni zkusenost nebo neco z nejakeho clanku (jakeho?)}
 
-\section{Maximum Flow Graph Cut Algorithm}
+\section{Max-flow dense correspondence algorithm}
 
-\todo{tuhle podkapitolku potrebujeme vlastne jeste napsat}
 % In computer vision there is a general task of stereo correspondence.
 % It is a problem of discovering the closest match between points of two pictures typically taken from different positions.
-Presumably, rectification of the images considerably simplifies the situation. 
+% Presumably, rectification of the images considerably simplifies the situation. 
 % Sometimes this constraint can be done.
-Once the correspondences are solved, we obtain a disparity map and it can be exploited to reconstruct the positions and distances of the cameras.
+% Once the correspondences are solved, we obtain a disparity map and it can be exploited to reconstruct the positions and distances of the cameras.
 
 % TODO: Nasledujici patri do uvodu kapitoly a taky jsem to tam presunul. 
 % Generally, there are two approaches to find the corresponding points.
@@ -200,12 +192,13 @@ Once the correspondences are solved, we obtain a disparity map and it can be exp
 % Only these high distinctiveness points are matched, hence it is called sparse stereo matching.
 % The second way, dense stereo matching, is to match as many pixels as possible.
 
-In 1999 Sébastien Roy published an algorithm %\cite{roy1998} 
-\cite{roy1999} to solve the stereo correspondence problem formulated as a maxim-flow problem in a graph.
-This approach does not use of epipolar geometry as many other do.
-It solves efficiently maximum-flow and gives a coherent minimum-cut that presents a disparity surface for the whole image.
-This way provides more accurate depth map then the classic algorithms and the result is computed in shorter time in addition.
+% In 1999, Roy published an algorithm %\cite{roy1998} 
+% \cite{roy1999} to solve the stereo correspondence problem formulated as a maximum-flow problem in a graph.
+% It solves efficiently maximum-flow and gives a coherent minimum-cut that presents a disparity surface for the whole image.
+% This way provides more accurate depth map then the classic algorithms and the result is computed in shorter time in addition.
 
 %The matching space is defined as a projective 3-d volume (to allow pyramids as well as cubes) formed
+
+\section{Lucas-Kanade algorithm for optical flow} 
 
 

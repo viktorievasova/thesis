@@ -1,31 +1,6 @@
-
 \chapter{Implementation}
 \label{chap:implementation}
 
-This chapter is devoted to implementation of our software.
-The result of this work is an Android application that allows to shoot pictures with a camera, browse them and pick photos for further processing.
-The output is a 3D model representing the disparity map which was calculated on the base on the selected input data.
-In the first section we enumerate the subtasks and chosen algorithms and then describe the structure of the software resources.
- 
-\section{Implementation outline}
-To implement the Android application, several subtask must be completed.
-At first it is the graphical user interface and handling the camera which is managed through Android Activities and xml files defining the layout of the graphical interface.
+\section{}
 
-Secondly, we deal with the calculation, which consist of image registration, keypoint detection, keypoint matching and solving the dense correspondence problem.
-Image registration is implemented by using Sum of absolute differences described in \ref{sec:sad}.
-Keypoints are detected with the Harris edge detector and described with ORB descriptor, which is an oriented variation of BRIEF (Binary Robust Independent Elementary Features) \cite{brief}.
-%Extracted keypoints are with only
-Each extracted keypoint we try to match with one extracted keypoint in the second image but only in the corresponding area determined due the previous image registration.
-In this way we save calculation time since we do not have to compare every two detected keypoints.
-
-
-\section{Project structure}
-The project resources can be divided into four parts:
-\begin{itemize}
-\item{Activities, }
-\item{Classes, }
-\item{Structures, }
-\item{xml files defining layout.}
-\end{itemize}
-
-
+\section{}
