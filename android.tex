@@ -15,7 +15,7 @@ Due to this, Android became the most popular operating system for smartphones.
 In this chapter, we introduce this system from programmer's perspective and give a brief description of how to implement an Android application.
 The purpose of the chapter is to highlight the main architectural differences of Android and conventional desktop platforms rather then providing a complete programer's manual. 
 
-\section{Introduction to Android development}
+\section{Introduction to the Android development}
 
 Android is a product of \term{The Open Handset Alliance}, which develops open standards for mobile devices and is led by Google.
 The Android platform is a layered environment built on the foundation of the Linux kernel.
@@ -29,7 +29,7 @@ A built-in camera support is also included and most Android handsets indeed feat
 The data storage support is provided by SQLite, a relational database management system in the form of a library implementing self-contained and server-less SQL database engine.
  
 Linux kernel, the first architectural layer of the platform, is used for memory and process management, device drivers, and networking.
-Above this, we have the native libraries, which include graphics support, media codecs, a SQLite and WebKit.
+Above this, we have the native libraries, which include graphics support, media codecs, SQLite, and WebKit.
 These are written in C or C++ and called through a Java interface.
 The actual applications are running on the Dalvik Virtual Machine (DVM), an implementation of the Java Virtual Machine optimized for low processing power and memory resources.
 % We should note that the virtual machine applications are running within is not Java virtual machine, but Dalvik Virtual machine.
