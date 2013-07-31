@@ -2,27 +2,25 @@
 \chapter{Image Processing Algorithms}
 \label{chap:algorithms}
 
-% TODO predchozi kapitolky byly poprehazeny, vynechcany: In the previous chapter we gave an overview of related work and algorithms that were introduced. 
-% This chapter is concentrated on some of these approaches in greater detail. 
-In this chapter, we introduce image processing algorithms often applied in software solutions with functionality similar to those discussed in Chapter \ref{chap:overview}. % TODO moc zdlouhava veta
+In this chapter, we introduce the image processing algorithms often applied in software solutions with functionality similar to those discussed in Chapter \ref{chap:overview}. 
 Applications reconstructing depth information from photographs or video sequences typically have at their core an algorithm that detects and tracks image primitives (such as corners, blobs, lines, individual pixels, etc.) across several photos/frames. 
 This knowledge allows one to estimate the camera parameters, which in turn makes it possible to compute the spacial parameters of the tracked primitives.
 % Tohle je asi moc velke rozpatlavani, takze jsem to ani nedopsal: For example, the solution outlined in \todo{reference na Snavelyho} extracts certain image features from individual input photos, matches these features between pairs of photos to obtain tracks, then proceeds to estimate camera parameters and 3D positions of points correponding to these features and finished by visualizing the resulting \pc.
 
-The approaches to computing correspondences between pairs of photos can be divided into \term{sparse correspondence} and \term{dense correspondence} problems. % can be approached from two perspectives. 
-In the former, a relatively conservative subset of only the most stable \term{features} are considered and paired. % TODO mozna zvazit, jestli pojem features nezavest nejak formalneji
+The approaches to computing correspondences between pairs of photos can be divided into \term{sparse correspondence} and \term{dense correspondence} algorithms. 
+In the former, a relatively conservative subset of only the most stable \term{features} are considered and paired. 
 In the latter, the objective is to obtain a correspondence in the second image for (almost) every pixel of the first image. 
 % Thus, dense correspondence algorithms allow us to obtain full diparity map of the first image in the image pair. 
 % We can either aim to establish correspondences between a restricted set of primitives, for example just the most stable looking corners detected in the images, or we can aim to establish a correspondence from (almost) every pixel of the reference image. 
 % The former approach is called \term{sparse correspondence problem} 
 
-We describe two techniques solving the sparse correspondence problem -- the SIFT \cite{lowe1999} and SURF \cite{surf2006} feature detectors/descriptors -- and then introduce a max-flow algorithm \cite{roy1999} for the dense correspondence problem. %%% optical flow 
+We describe two techniques solving the sparse correspondence problem -- the SIFT \cite{lowe1999} and SURF \cite{surf2006} feature detectors/descriptors -- and then discuss the Lucas-Kanade method for computing optical flow. % XXX ten optical flow je nuten do toho zasadit nejak vic 
 
 % We describe three techniques -- the SIFT feature detector/descriptor, the SURF feature detector/descriptor, and the Graph-cut algorithm. \todo{potrebujeme urcite pridat citace}
 % SIFT and SURF are the most used algorithms to detect features.
 % Both of them are robust to scale and rotation.
 Generally, sparse feature matching algorithms first extract features from each photo. % from a pair of photos of the same scene. % TODO nejsem si jisty, jestli tam napsat "of the same scene", protoze taky mohou byt pouzity k object detection 
-If the feature detection is repeatable, most of the features should be detected in all images where the corresponding scene element is visible.
+If the feature detection is \term{repeatable}, most of the features should be detected in all images where the corresponding scene elements are visible.
 Then, for each feature a \term{descriptor} is generated, typically a high-dimensional vector. 
 This descriptor is constructed in a way ensuring invariance to various image transformations. 
 For instance, the SIFT descriptor is invariant to translation, rotation, scaling, and image noise. 
@@ -34,78 +32,73 @@ The SIFT descriptor is also partially invariant to illumination changes and to a
 % Since the descriptors are computed, we can match them between a pair of images. 
 % Due to the fact that our descriptors are vectors, we can match them according to the distance in the space, using Euclidean distance for example.
  
- 
- 
-\section{Scale-invariant feature transform}
+\section{Scale-Invariant Feature Transform}
 
-Scale-invariant feature transform (SIFT) was introduced by Lowe in \cite{lowe1999}, building on a previous work by Lindeberg \cite{lindeberg1998}. 
+The scale-invariant feature transform (SIFT) was introduced by Lowe in \cite{lowe1999}, building on a previous work by Lindeberg \cite{lindeberg1998}. 
 The paper describes both a feature detector and descriptor. 
 To this day, SIFT remains a popular choice for applications such as panorama stitching and object detection. 
 It is able to detect objects in images even in the presence of clutter.
 
-To generate the set of features and their description, four major steps are followed.
-At first, features are detected over all scales of the grayscale version of the input images.
-Then for each detected potential feature, its location and scale model is determined to measure their stability.
-Only the stable features are selected for further computation.
-In the next stage, to each feature that passed the previous tests, based on the local gradient directions the orientation assignment is computed.
-It is used to establish a reference frame for the construction of the descriptor.
+Let us outline the major steps in which the algorithm proceeds in its task to repeatably generate a set of features in an image and to compute their corresponding descriptors. 
+Recall that an imporant and desirable property of these descriptors is their invariance to image transformations like rotation, scaling or illumination changes. 
+% The algorithm starts by building the scale-space of the image. 
+Firstly, candidate features are detected over all scales of the grayscale version of the input image. 
+Locations of these features are then determined with subpixel precision. 
+Simultaneously, features corresponding to unstable image regions are filtered out from the dataset. 
+  % Then, for each potential feature, its location and scale model is determined with subpixel precision by fitting a quadratic function.
+  % This quadratic functions is also used to filter out unstable features that lie on an edge or are likely to result from image noise. 
+In the next stage, each feature is assigned its orientation and scale based on the prevailing gradient directions in the image neighbourhood. 
+This orientation is used to establish a reference frame for the construction of the descriptor.
 The last step is the feature description.
-The SIFT feature descriptor is a 128-dimensional vector determined by the gradients around the feature at the selected scale. 
+The SIFT feature descriptor is a 128-dimensional vector determined by the gradients around the feature at the corresponding scale. 
 Since the computation of the descriptor is performed using the abovementioned local reference frame, 
 the resulting descriptor is invariant to transformations that affect this reference frame in a covariant manner but only partially invariant to affine transformations and illumination changes.
 We now proceed to describe both the detection and the descriptor construction steps in more detail.
 
-The first step in feature detection is to identify locations and scales that can be repeatably assigned.
-It has been shown, that the only possible scale-space kernel is Gaussian function.
-Hence the scale-space of each input image is defined as a convolution of a Gaussian with it.
-We can formulate it as a function:
-
+The first step in the feature detection part of the algorithm is to identify candidate locations of all scales in a highly repeatable manner. 
+For this, Gaussian scale-space is employed. 
+Recall its definition from Section \ref{sec:gaussder}:
 \[
-L(x, y) = G(x, y, \sigma) * I(x, y),
+L(x, y; \sigma) = g(x, y, \sigma) * f(x, y),
+\]
+where $\sigma$ is the deviation of the Gaussian function, $*$ the convolution operator, $f(x, y)$ is the input image, and $g(x, y)$ the Gaussian function
+\[
+ g(x, y, \sigma) = \left( \frac{1}{\sqrt{2\pi \sigma _1^{2}}} \cdot e^{-\frac{x^{2}+y^{2}}{2\sigma_1^{2}} } \right).
 \]
 
-where $\sigma$ is the deviation, $*$ presents the convolution operator, $I(x, y)$ is the input image and $G(x, y)$ is the Gaussian function
-
+To extract the features in the scale-space we detect the local extrema in the difference-of-Gaussian function $D(x, t, \sigma)$.
+The difference-of-Gaussian (DoG) is defined as the difference of two neighbouring images of the scale-space: 
 \[
- G(x, y, \sigma) = \left( \frac{1}{\sqrt{2\pi \sigma _1^{2}}} \cdot e^{-\frac{x^{2}+y^{2}}{2\sigma_1^{2}} } \right).
+ D(x, y, \sigma) = L(x, y; 2\sigma) - L(x, y; \sigma) = (g(x, y, 2\sigma) - g(x, y, \sigma)) * f(x, y).
 \]
+Each sample point of the DoG is compared to its eight neighbours in the current scale and nine neighbours on the levels below and above.
+If it is larger than all of these neighbours, it is selected as a maximum; if it is smaller than all of them, it is selected as a minimum. 
+It can be shown that the DoG approximates the Laplacian of the image at the particular location. 
+These extrema should therefore correspond to ``blobs'' in the image.
+The application of scale-space ensures that blobs of all possible sizes are detected. 
+These locations are taken as an initial set of candidate feature. 
 
-To extract the features in the scale-space we detect the local extrema in the difference-of-Gaussian function convolved with the image $D(x, t, \sigma)$.
-The difference-of-Gaussian (DoG) is defined as the difference of two neighbouring images of the scale-space.
-The $D(x, t, \sigma)$ function can be expressed as:
-
-\[
- D(x, y, \sigma) =  (G(x, y, 2\sigma) -  G(x, y, \sigma)) *  I(x, y).
-\]
-
-
-Each sample point of DoG is compared to its eight neighbours in the current scale and nine neighbours in the scale below and above.
-If it is larger than all of these neighbours, it is selected as maximum, if it is smaller than all of them, it is selected as minimum. 
-
+We need to filter this set significantly to ensure high repeatability of the resulting set of features. 
 Usually, the detection of scale-space extrema results is a large number of candidate keypoints. 
-However, some of them are local extrema created by image noise or the responses of the operator along edges. 
+However, some of them are local extrema resulting from image noise or the responses of the operator along edges. 
 Such structures are unstable and should be discarded from the set of candidate keypoints.
-To detect such unstable features, we fit a 3D quadratic function to the local sample points and interpolate the location of maximum.
+To reject such unstable features, we fit a 3D quadratic function to the local sample points and interpolate the location of the extremum.
 This is done using quadratic Taylor expansion of the function $D(x, y, \sigma)$ around the detected point.
-%It can be illustrated as a 3D parabola interpolating the local sample points.
-By calculating the minimum we get the value of the local extrema.
-This value is used for rejecting unstable extrema that were detected from $D(x, y, \sigma)$.
-If the 3D parabola is shallow the detected point is a result of noise and we reject it.
+By calculating the minimum we get the position of the local extremum with a subpixel precission.
+Properties of this quadratic function are used to reject unstable extrema: if the function is too shallow, we discard the feature as a result of image noise; if it is too narrow, the extremum likely corresponds to an edge in the image.  
 Otherwise we accept it as a feature.
 
 % orientation:
-To achieve invariance to rotation, local orientation must be determined. 
-First, we compute a histogram of orientations of image gradients around the keypoints location. 
-The peaks of the histogram represent dominant orientations. 
-The orientations corresponding to the highest peak are assigned to the feature. 
-If there are several peaks of magnitude within 80\% of the highest peak, multiple keypoints are generated – one for each such orientation.
+To achieve invariance to rotation, local orientation must be determined for each feature. 
+First, we compute a histogram of orientations of image gradients around the its location. 
+The peaks of the histogram represent the dominant orientations. 
+The orientation corresponding to the highest peak is assigned to the feature. 
+If there are several peaks of magnitude within 80\% of the highest peak, multiple keypoints are generated -- one for each such orientation.
 
 The descriptor is then constructed by considering several histograms in the four quadrants of the reference frame of the keypoint.
 Typically, each quadrant is divided into four subregions. 
 In each of the resulting sixteen subregions, we construct a histogram of orientations of gradients sampled regularly in the subregion. 
 Concatenating the values in these histograms results in a 128-dimensional vector.
-
-
 
 \section{Speeded-Up Robust Features}
 
@@ -184,7 +177,7 @@ Furthermore, due to the global integration of the SURF-descriptor, it stays more
 SURF offers invariance to rotation and limited levels of image blurring.
 On the other hand, SIFT is more robust under illumination changes and viewpoint changes. \todo{znovu neni jasne, jestli popisujeme vlastni zkusenost nebo neco z nejakeho clanku (jakeho?)}
 
-\section{Max-flow dense correspondence algorithm}
+% \section{Max-flow dense correspondence algorithm}
 
 % In computer vision there is a general task of stereo correspondence.
 % It is a problem of discovering the closest match between points of two pictures typically taken from different positions.
@@ -207,4 +200,29 @@ On the other hand, SIFT is more robust under illumination changes and viewpoint 
 
 \section{Lucas-Kanade algorithm for optical flow} 
 
+Optical flow algorithms are typically applied in postprocessing software for movies to track an object through a video sequence. 
+We can think of this problem as the image correspondence problem optimized for the situation where there is very little camera movement between the registered pair of photos, as is in the case with two consecutive frames of a video sequence. 
+The output of such algorithm is an array of $2$-dimensional vectors $\mathbf{d}_\x$, where $\x$ is an image position, with the property that the point $\x$ on the first frame corresponds to the point $\x + \mathbf{d}_\x$ on the second one. 
+Optical flow is typically not constrained by epipolar geometry, since the assumption is that the video is of a dynamic scene that includes objects moving relative to the camera and each other.
+The algorithms for optical flow tend to work only when the differences between the images are significantly limited and the registration can be performed only on a small neighbourhood of the original position of a feature. 
+
+We now describe a classical Lucas-Kanade method \cite{lucas} for calculating the optical flow between two images $I_1$ and $I_2$.
+
+The method proceeds by specifying linear constraints on the values $\mathbf{d}_\x$ and then solves the resulting over-determined system in the least squares sense. 
+For each pixel $\x$ that is being tracked, we consider the following equation: 
+\begin{align} 
+\label{optfloweq} 
+\Delta I_1(\x) \cdot \mathbf{d}_\x = I_1(\x) - I_2(\x),
+\end{align} 
+where $\Delta I_1(\x)$ is the image gradient at $\x$.
+% $$\Delta I_1(\x) = \Big(\imd1{\partial x}(\x), \imd1{\partial y}(\x)\Big).$$
+This is motivated by the observation that the apparent movement should be roughly in the direction of the image gradient for locations with a large jump of the intensity value between the frames. 
+On the other hand, when the intensity of a pixel is approximately the same in both frames, we either expect no movement or just a movement perpendicular to the image gradient.
+However, the inclusion of just the above equations does not enforce spatial consistency of the movement in any way.
+This is taken into account by repeating equation (\ref{optfloweq}) for each position $\x^i$ taken from the neighbourhood of $\x$ of a fixed size. 
+Specifically, we add the following equation for each $\x^i$:
+$$\Delta I(\x^i) \cdot \mathbf{d}_\x = I_1(\x^i) - I_2(\x^i).$$
+Note that the differences are read from the position $\x^i$ while the movement constrained is of the pixel $\x$.
+Solving the above over-determined system using conventional methods gives us the desired values $\mathbf{d}_\x$.
+% Optical flow is calculated for every pixel of the video frame, meaning that the output is a field of $2$-dimensional vector $d_\x$ (for each pixel $\x$ of the image) determining the movement of the pixel between the two frames of the video. 
 
