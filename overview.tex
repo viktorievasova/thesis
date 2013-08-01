@@ -143,11 +143,16 @@ OpenGL ES, a subset of OpenGL for embedded systems including mobile phones and c
 \section{Problem statement} 
 \label{prob}
 
-Our application's objective is to provide the user the posibility to create a rough 3D model of a scene pictured on a pair of photos. 
-We expect that: 
+Our application's objective is to provide the user with the posibility to create a rough 3D model of a scene pictured on a pair of photos. 
 
+Note that currently there are many different Android phones with many different cameras. 
+Furthermore, the optical quality of these cameras tends to be rather low with cheap solutions being much more prevalent.
+Specifically, we cannot hope that it would be possible to accurately estimate the internal calibration (focal length, coefficients of non-linear distortion, etc.) of the camera. 
+These difficulties are reflected in the conditions we impose on the input photographs.
+
+We expect that: 
 \begin{itemize}
-\item both photos are focused, reasonably sharp and not significantly over- or under-exposed, 
+\item both photos are focused, are not significantly blurred, have reasonably high resolution (at least VGA), and are not significantly over- or under-exposed, 
 \item the viewpoints the camera had when taking the photos differ only by translation, 
 \item the above-mentioned translation is not negligible -- our software certainly cannot reconstruct the depth information from a pair of photos that are identical,
 \item there is some overlap between the two photos, i.e. some scene elements are visible on both photos,
