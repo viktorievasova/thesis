@@ -10,7 +10,7 @@ This knowledge allows one to estimate the camera parameters, which in turn makes
 The approaches to computing correspondences between pairs of photos can be divided into \term{sparse correspondence} and \term{dense correspondence} algorithms. 
 In the former, a relatively conservative subset of only the most stable \term{features} are considered and paired. 
 In the latter, the objective is to obtain a correspondence in the second image for (almost) every pixel of the first image. 
-% Thus, dense correspondence algorithms allow us to obtain full diparity map of the first image in the image pair. 
+% Thus, dense correspondence algorithms allow us to obtain full disparity map of the first image in the image pair. 
 % We can either aim to establish correspondences between a restricted set of primitives, for example just the most stable looking corners detected in the images, or we can aim to establish a correspondence from (almost) every pixel of the reference image. 
 % The former approach is called \term{sparse correspondence problem} 
 
@@ -40,7 +40,7 @@ To this day, SIFT remains a popular choice for applications such as panorama sti
 It is able to detect objects in images even in the presence of clutter.
 
 Let us outline the major steps in which the algorithm proceeds in its task to repeatably generate a set of features in an image and to compute their corresponding descriptors. 
-Recall that an imporant and desirable property of these descriptors is their invariance to image transformations like rotation, scaling or illumination changes. 
+Recall that an important and desirable property of these descriptors is their invariance to image transformations like rotation, scaling or illumination changes. 
 % The algorithm starts by building the scale-space of the image. 
 Firstly, candidate features are detected over all scales of the grayscale version of the input image. 
 Locations of these features are then determined with subpixel precision. 
