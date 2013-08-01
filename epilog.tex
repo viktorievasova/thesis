@@ -10,7 +10,7 @@ These results are comparable with the real appearance of the scenes and can be i
 Our implementation fails and does not give good results on noisy images or images of chaotic scenes.
 In such a kind of scenes the features are matched incorrectly or is not even detected a sufficient number of SURF keypoints to reconstruct the 3D information. 
 With high probability, the relative position of a pair of images of different illumination will not be estimated correctly.
-Because of the relevant restriction on the area of the shape of an oriented rectangle where are corresponding points searched (as we explained in Chapter \ref{chap:implementation}),
+Because of the relevant restriction on the area of the shape of an oriented rectangle where are the corresponding points searched (as we explained in Chapter \ref{chap:implementation}),
 it is not possible to match the keypoints correctly when the registration fails.
 
 \section*{Future work}
@@ -20,8 +20,9 @@ Also it does not give good results on the images influenced by noise, which is q
 especially when the lightening conditions are not ideal.
 This can be solved by obtaining the information of relative position by using mutual information while the mutual information is independent to the information of illuminance.
 
+Current version of our program detects the  depth information from a pair of images.
 Our implementation could be also extended to the input of $n$ photos. 
-It would be necessary to find the relative position of all pairs of photos.
+It would be necessary to find the relative position of all pairs of images.
 This does not have to be calculated explicitly, but possibly we could estimate the position of two images when having the information about their position with the third image.
 Detection and matching of SURF keypoints would be applied only to the pairs with an overlapping part.
 Most of the implemented methods were designed to be easily extended for this purpose.
@@ -31,6 +32,7 @@ However, we have not managed to optimalize it's behaviour, because it was not th
 Therefore, it could be an option how to extend the application.
 If we go even further, this way of using the device's equipment such an accelerometer can be used to estimate the relative position of taken pictures detected from the motion of the device.
 We should note that we can not rely on any interaction with the user to calibrate the camera, since the the mobile phone lens causes a non-linear distortion of the image and non-linear distortion can not be modeled.
+
 
 
 
