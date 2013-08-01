@@ -1,3 +1,24 @@
+\begin{figure}[H]
+\centering
+
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=5cm]{img/ema_overlap.png}
+\caption{The result of the registration using sum of absolute differences.}
+\label{emaover}
+\end{subfigure} 
+\hspace{0.5cm}
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[width=5cm]{img/ema_buckets.png}
+\caption{The division of the second image into square-boxes.}
+\label{emabuckets}
+\end{subfigure} 
+
+\label{fig:overlap_and_buckets}
+\end{figure}
+
+
 Notes
 =====
 

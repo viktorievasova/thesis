@@ -1,17 +1,17 @@
 \chapter{Implementation}
 \label{chap:implementation}
 
-In this chapter, we describe how to connect the computer vision algorithms described in Chapter \ref{chap:algorithms} to obtain a program solving the task of 3D reconstruction on a mobile phone. 
-The result of this work is an Android application that allows the user to take photos with a camera, browse them and pick a pair of images to reconstruct. 
-The reconstructed image is then visualized in 3D using OpenGL~ES.
+In this chapter, we investigate how to connect the computer vision algorithms described in Chapter \ref{chap:algorithms} to obtain a program solving the task of 3D reconstruction on a mobile phone. 
+The result of this work is an Android application that allows the user to take photos with phone's camera, browse them and pick a pair of images to reconstruct. 
+The reconstructed scene is then visualized in 3D using OpenGL~ES.
 Recall the properties of the input pair of photos described in Section \ref{prob}.
-An example of a suitable pair of images is shown in Figure \ref{fig:input_samples}.
+(An example of a suitable pair of images is shown in Figure \ref{fig:input_samples}.)
 
 The following are the main obstacles we are faced with when trying to solve this problem: 
 \begin{itemize}
 \item mobile phones typically have a limited computational power, 
 \item they also have limited operational memory, 
-\item most importantly, the optical properties of digital cameras included in a typical mobile phone are of mediocre quality at best. 
+\item most importantly, the optical properties of cameras included in a typical mobile phone are of mediocre quality at best. 
 \end{itemize} 
 The last property is particularly troublesome for us, since it implies -- among other problems -- that the captured image is defomed by an unknown non-linear transformation. 
 % This is an issue often encountered in professional-grade cameras as well. 
@@ -22,23 +22,25 @@ However, this significantly restricts the choice of computer vision algorithms t
 For example, algorithms for the dense reconstruction problem are often heavily dependent on having a precise model of the epipolar constrains in the image pair. 
 
 We solve this issue using a combination of sparse feature matching and the classical optical flow algorithm (both described in Chapter \ref{chap:algorithms}). 
-Specifically, we employ the SURF algorithm because it has better computational efficiency compared with the SIFT algorithm.
+Specifically, we employ the SURF algorithm since it has better computational efficiency compared with the SIFT algorithm.
 Sparse feature matching can be successfully performed without any kind of epipolar constraint and therefore the inaccuracy of the camera model is not an issue. 
 However, the resulting 3D information is only a sparse 3D point cloud reconstruction of the scene. 
-Since this is insufficient for our purposes, we then repeat optical flow calculation on pairs of neighbourhoods of corresponding features. 
+Since this is insufficient for our purposes, we perform repeated optical flow calculation on pairs of neighborhoods of corresponding features. 
 
 % The final section is devoted to technical aspects of the implementation. 
 
 \section{Implementation outline}
 \label{sec:impl_outline}
-In the this section we describe the way how was the task solved, what algorithms were chosen and how was the application implemented.
-At first we find the initial relative position of the pair of the input images.
-Then we detect and match SURF keypoints from which is chosen the most robust match to specify the relative position more accurately.
+In the this section we describe the way of solving the 3D reconstruction task, discuss what algorithms were chosen, and how was the application implemented.
+Let us begin with a brief overview of the algorithm, which is also depicted on Figure \ref{fig:impl}.
+At first we find an initial estimate of the relative position of the pair of the input photos.
+Then, we detect and match SURF features and use this information to compute the relative position more precisely. 
 The next step is to detect a larger amount of SURF keypoints. 
-The matching process uses the information of the relative position estimated in the previous step and thus obtain significantly larger number of matches.
-Finally, we obtain the dense correspondences by detecting even more matches using the optical flow algorithm.
-An illustration of the steps of the process is shown in Figure \ref{fig:impl}.
+The matching process uses the information of the relative position estimated in the previous step and thus can obtain significantly larger number of matches.
+Finally, we compute the dense correspondences between the images using the Lucas-Kanade optical flow algorithm.
+In the sections below, we discuss these steps in more detail. 
 
+\vspace{0.5cm}
 \begin{figure}[H]
 \centering
 
@@ -47,6 +49,7 @@ An illustration of the steps of the process is shown in Figure \ref{fig:impl}.
 \includegraphics[width=3.8cm]{img/impl0.pdf}
 \caption{An overall shift between the photos is computed.} \label{impl0}
 \end{subfigure}
+\hspace{0.5cm}
 \begin{subfigure}[b]{0.45\textwidth}
 \centering
 \includegraphics[width=6.5cm]{img/impl1.pdf}
@@ -55,9 +58,10 @@ An illustration of the steps of the process is shown in Figure \ref{fig:impl}.
 \begin{subfigure}[b]{0.45\textwidth}
 \centering
 \includegraphics[width=6.5cm]{img/impl2.pdf}
-\caption{Increasing the density of SURF matches through local matching. Only features inside the bigger rectangle are considered.} \label{impl2}
+\caption{Increasing the density of the SURF matches through local matching. Only features inside the bigger rectangle are considered.} \label{impl2}
 % Only features inside the bigger rectangle are considered, only features inside the smaller one are accepted as correspondences.
 \end{subfigure}
+\hspace{0.5cm}
 \begin{subfigure}[b]{0.45\textwidth}
 \centering
 \includegraphics[width=6.5cm]{img/impl3.pdf}
@@ -67,44 +71,78 @@ An illustration of the steps of the process is shown in Figure \ref{fig:impl}.
 \caption[]{An illustration of the four main stages of our reconstruction pipeline.} 
 \label{fig:impl}
 \end{figure}
+\vspace{0.5cm}
 
-\subsection{The initial relative position}
-The first step is illustrated in Figure \ref{impl0}.
-Finding the initial relative position of the pair of the images is implemented by using Sum of absolute differences (described in Section \ref{sec:metrics}).
-At first, we create an image pyramid, find the overlap of the images in the lowest scale and by upscaling specify the overlapping area more accurately.
-In this way the registration runs in approximately two seconds for a pair of the expected input.
+\subsection{Estimating the displacement vector}
+The first step is illustrated on Figure \ref{impl0}.
+Finding the initial relative position of the pair of the images is implemented by using the sum of absolute differences (described in Section \ref{sec:metrics}).
+For efficiency-related reasons, we begin by creating an image pyramid and find the overlap minimizing the sum of absolute differences in the lowest scale. 
+We then use this position in a higher level of the pyramid, corresponding to a higher resolution. 
+However, on this level, we only need to consider shifts by a small number of pixels. 
+This upscaling continues until the image resolution is above a certain threshold. 
+We call the resulting vector a \term{displacement vector}.
+An example of the result of such computation is on Figure \ref{emaover}.
 
 \begin{figure}[H]
-\centerline{
-\includegraphics[width=4.0cm]{img/ema_overlap.png}
-\includegraphics[width=4.0cm]{img/ema_buckets.png}}
-\caption{Left: The result of the registration where the process of upscaling was stopped when the height of the image was over 200px. Right: The division of an image into square-boxes.}
-\label{fig:overlap_and_buckets}
-\end{figure}
+\centering
+\includegraphics[width=5cm]{img/ema_overlap.png}
+\caption{The result of the registration using sum of absolute differences.}
+\label{emaover}
+\end{figure} 
 
-\subsection{Finding the most robust match}
-The next step of the process is detection of features using the SURF detector (it is shown in Figure \ref{impl1}).
-The basic approach is to try matching every possible pair of the features between two images.
-However, this method is very slow and for our work not acceptable.
-We speeded-up the computation by dividing the images into square-boxes of the same size and to each square-box we assign an array of keypoints situated in it.
-When finding a match for the feature in the first image, we estimate it's corresponding surrounding area in the second image 
-and find the square-boxes which are at least partially situated in it.
-From these square-boxes we choose the keypoints lying in the corresponding area and find the best match for the keypoint.
-At first we find the most robust match from only the SURF keypoints where the the value of the Hessian reaches the specified value.
-Based on this match we estimate the direction of the shift which gives us more accurate relative position of the input pair of images.
+\subsection{Improving the displacement vector estimate}
+\label{sec:improving}
+
+We now have a rough estimate of the relative position between the photos. 
+Our aim now is to improve its precision.
+This is done by considering SURF features detected with high values Hessian threshold. 
+We consider these since their number is relatively low and they are highly repeatable. 
+
+The basic approach would be to try matching every possible pair of features from the corresponding images. 
+However, this method is very slow and unsuitable for our application. 
+Therefore, we utilize the knowledge of the approximate relative position between the images in order to match these features efficiently.
+We start by dividing the second image into square-shaped \term{buckets} of identical size and to each bucket we assign an array of features contained in it.
+The situation is illustrated on Figure \ref{impl1}.
+When finding a match for a feature in the first image, we estimate its corresponding position in the second image and consider a circular area around it. 
+Then, we list the buckets intersecting it and iterate only through these features. 
+Based on these matches, we estimate the direction of the shift, giving us a more accurate relative position of the input pair of images.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=5cm]{img/ema_buckets.png}
+\caption{The partition of the second image in the dataset into buckets.}
+\label{emabuckets}
+\end{figure} 
 
 \begin{figure}[H]
 \centerline{
 \includegraphics[width=8cm]{img/ema_direction.png}}
-\caption{The most robust match chosen from the keypoints with the Hessian over 4000. According to this match the more accurate relative position of images is estimated.}
+\caption{The most robust match chosen by considering features with large values of the Hessian parameter.}
 \label{fig:robust_match}
 \end{figure}
 
 \subsection{Feature matching}
-To find larger number of corresponding point and more information about the scene, we match the detected SURF keypoints one more time in the next step (see Figure \ref{impl2}).
-Otherwise, our corresponding matches would be too sparse for the 3D reconstruction.
-For each keypoint, we calculate the corresponding area of the surroundings in the shape of a rectangle oriented in the direction of the shift.
-To avoid mismatches we reject the matches where the matched keypoints differs too much in the orientation or if there is more than one obvious potential points for the match.
+
+Recall that we assume that the two cameras corresponding to our photos differ only by a purely translational movement perpendicular to the principal axis.
+In such a case, the epipolar lines corresponding to all positions in one image clearly are parallel lines in the other one. 
+Thus, for all pixels in the first image, the position of the corresponding point in the second image differs by a multiple of the displacement vector estimated in the previous step. 
+We exploit this now to obtain a large number of SURF correspondences. 
+
+% To find larger number of corresponding point and more information about the scene, we match the detected SURF keypoints one more time in the next step (see Figure \ref{impl2}).
+We iterate through all the SURF features in the first image and consider a rectangular region as illustrated on on Figure \ref{impl2}.
+This rectangle is oriented in the direction of the displacement vector and its center is at the position $\mathbf{x} + \mathbf{d},$ where $\mathbf{x}$ is the original feature's position in the first image and $\mathbf{d}$ is the estimate of the displacement vector estimated in the previous section. 
+Thus, this region corresponds to the most probable position of the corresponding feature. 
+Utilizing the buckets described in Section \ref{sec:improving}, we can quickly go through all the second image's features inside the rectangular region. 
+We find the feature with the most similar descriptor and consider this to be a putative match.
+
+To avoid mismatches we apply several measures to filter them. 
+For example, we accept a match only if there is just one feature with a very similar descriptor and all other feature descriptors we went through are at a distance, say, 20\% bigger than that of the closest match. 
+In other words, we accept a match only if the matching feature is a ``clear winner''.
+This technique is known as \textit{feature-space outlier rejection}.
+To increase stability, we actually employ a second, bigger, rectangle and search for the second closest feature in this bigger one.
+We also use the fact that there is orientation assigned to the individual featurers. 
+If our assumptions on the data are correct, then matching features should clearly have nearly identical orientations. 
+Therefore, we filter out correspondences where the features have orientations differing by more than a certain threshold. 
 
 %When we know the more accurate relative position of the images, we investigate the keypoints one more time.
 %Now we iterate all of them. 
@@ -120,24 +158,28 @@ To avoid mismatches we reject the matches where the matched keypoints differs to
 %Dense correspondence: optical flow::
 
 \subsection{Dense correspondence}
-At this point we have relatively robust matches for sparse correspondence. 
-For the calculation of the depth information we need to extract more corresponding points.
-Assuming the difference of images is limited, we use for this purpose optical flow algorithm. 
-For each SURF keypoint in the first image we detect corners or other features acceptable for the tracking algorithm in its 70 $\times$ 70 pixels area.
 
-Calculating the optical flow we get the corresponding points in the second image.
-With high probability some of the results will be influenced by noise.
-To avoid these mismatches we calculate the variation of the distances between each match.
-If the variation is higher than 300 we discard all of the detected optical flow matches.
-This stage (illustrated in Figure \ref{impl3}) gives us dense correspondence and enough information to build a 3D reconstruction of the scene.
+At this point we have relatively robust set of matches, but it is too sparse to visualize directly.
+We therefore want to obtain significantly more matches. 
+We utilize the optical flow algorithm discussed in Section \ref{sec:optfl} to do this.
+The issue now is, however, that optical flow algorithms work well only on pairs of images with very limited visual differences. 
+Because of this, we do not run this algorithm on the original image pair.
+Rather, for each SURF correspondence we obtain $70 \times 70$ pixel region around the corresponding features and calculate the optical flow between these two feature neighborhoods (see Figure \ref{impl3}).
+By calculating the optical flow we get the corresponding points in both photos. 
+
+It is inevitable that the set of SURF correspondences will contain mismatches.
+In such a case, the optical flow computation will likely generate almost random values, resulting in significant noise being added to our 3D reconstruction. 
+To avoid these, we calculate the variance of the distances between each match.
+If the variance is higher than a specified threshold, we discard all of the detected optical flow matches obtained from that particular SURF correspondence.
 
 \section{Graphical visualization}
-The result is visualized in OpenGL~ES.
-Every keypoint is represented as a triangle in a space with the depth calculated from the correspondence.
-The depth is estimated form the distance of the corresponding pair of keypoints. 
-The shift is not that remarkable for objects in the background of the image and thus the distance is smaller.
-Bigger distance occurs for images situated in the foreground.
-We start rendering the model when we obtain the first information about the depth resulted from the SURF matching.
-Each time new data from calculation of the dense corresponding points are available, we update the model, so the user can see an animation of the process of execution of our algorithm.
 
+The result is visualized in OpenGL~ES.
+Every correspondence is represented as a triangle in space.
+The depth is estimated form the distance of the corresponding pair of features (the smaller the displacement is, the bigger the depth of the point). 
+A designated thread is used to render the reconstruction. 
+We start rendering when we obtain the first depth information resulting from SURF matching.
+Each time new data from a newly executed optical flow calculation are available, we update the model, so that the user can see an animation of the process of execution of our algorithm.
+
+As a result of this approach to visualization, the application seems faster to the user, since he or she can see partial results almost immediately after requesting the reconstruction. 
 

@@ -105,11 +105,12 @@ The Hessian matrix forms a basis for a basic feature detector (called Hessian de
 This leads to a detection of corners and features of size roughly comparable to the variance of the Gaussian kernel used to compute the Gaussian derivatives. % TODO zkontrolovat, jestli to neni nesmysl
 
 \section{Basic image similarity metrics} % XXX zamyslet se nad timhle nazvem a jestli je to skutecne metrika
+\label{sec:metrics}
 
 We now introduce two simple metrics that can be used to estimate similarity of visual contents of a pair of images. 
 These are often used as a basis for more sophisticated image registration algorithms, e.g. \cite{hirschmuller2008}.
 
-\term{Sum of absolute differences} describes the difference of intensities of corresponding areas of two images: 
+\term{Sum of absolute differences} (SAD) describes the difference of intensities of corresponding areas of two images: 
 \begin{definition} 
 Let $I_1(x, y)$ and $I_2(x, y)$ be two grayscale images. 
 Then \term{the sum of absolute differences of $I_1$ and $I_2$} is the value $\sum_{x, y} |I_1(x, y) - I_2(x, y)|$. 
@@ -232,6 +233,7 @@ However, in our case, the matrix is going have only one degree of freedom due to
 % Since automatic image registration algorithms typically produce more than $8$ correspondences, this
 
 \section{Integral images}
+\label{integral}
 
 % Later in this work we work with the term of integral images. 
 \term{An integral image}, also known as \term{summed area table}, allows fast and efficient computation of a sum of image intensity values inside an arbitrary rectangular area.
@@ -246,8 +248,8 @@ Moreover, once we have calculated the integral image, only three integer operati
 of the original intensities inside any rectangular region (see Figure \ref{fig:integral}).
 
 \begin{figure}[h]
-  \label{fig:integral}
   \centering{\includegraphics[width=7.5cm]{img/integral_image.pdf}}
   \caption{The sum of any rectangular region can be calculated by only three additions: $C - D - B + A$.}
+  \label{fig:integral}
 \end{figure}
 

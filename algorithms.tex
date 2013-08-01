@@ -14,7 +14,7 @@ In the latter, the objective is to obtain a correspondence in the second image f
 % We can either aim to establish correspondences between a restricted set of primitives, for example just the most stable looking corners detected in the images, or we can aim to establish a correspondence from (almost) every pixel of the reference image. 
 % The former approach is called \term{sparse correspondence problem} 
 
-We describe two techniques solving the sparse correspondence problem -- the SIFT \cite{lowe1999} and SURF \cite{surf2006} feature detectors/descriptors -- and then discuss the Lucas-Kanade method for computing optical flow. % XXX ten optical flow je nuten do toho zasadit nejak vic 
+We describe two techniques solving the sparse correspondence problem -- the SIFT \cite{lowe1999} and SURF \cite{surf2006} feature detectors/descriptors -- and then consider the Lucas-Kanade method for computing optical flow. % XXX ten optical flow je nuten do toho zasadit nejak vic 
 
 % We describe three techniques -- the SIFT feature detector/descriptor, the SURF feature detector/descriptor, and the Graph-cut algorithm. \todo{potrebujeme urcite pridat citace}
 % SIFT and SURF are the most used algorithms to detect features.
@@ -114,7 +114,7 @@ The determinant of this matrix expresses the local change around the area.
 The points that are simultaneously local extrema of both the determinant and the trace of the Hessian matrix are chosen as candidate keypoints.
 %The detection of interest points is performed using an approximation of the Hessian-matrix.
 However, the convolution is a very costly in terms of calculation time.
-It is approximated and speeded-up using the integral images (see Section \ref{sec:integral_images}).
+It is approximated and speeded-up using the integral images (see Section \ref{integral}).
 The convolution is performed using a kernel that approximates the second derivative Gaussian kernel reasonably well, yet it is possible to evaluate the operation using a limited number of queries to the integral image structure. 
 Since these queries can be fulfilled in $O(1)$ time, this results in a relatively fast runtime. 
 Another advantage of this is that the SURF algorithm does not need to build the scale-space by explicitly blurring and down-sampling the images.
@@ -177,6 +177,7 @@ This shows that none of these detectors/descriptors outperforms the other in all
 %The matching space is defined as a projective 3-d volume (to allow pyramids as well as cubes) formed
 
 \section{Lucas-Kanade algorithm for optical flow} 
+\label{sec:optfl}
 
 Optical flow algorithms are typically applied in postprocessing software for movies to track an object through a video sequence. 
 We can think of this problem as the image correspondence problem optimized for the situation where there is very little camera movement between the registered pair of photos, as is in the case with two consecutive frames of a video sequence. 
