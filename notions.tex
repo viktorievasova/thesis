@@ -2,11 +2,11 @@
 \label{chap:notions}
 
 To make this work more self-contained, we briefly introduce basic notions and concepts used in the later chapters. 
-Interested reader is refferred to the monographs \cite{szeliski2010, multipleview} for further details.
+Interested reader is referred to the monographs \cite{szeliski2010, multipleview} for further details.
 
 \section{Convolution}
 
-\term{Convolution} is an operation on two functions often encounterred in signal processing.
+\term{Convolution} is an operation on two functions often encountered in signal processing.
 In image processing, convolution is typically used to apply a particular filter (kernel) to the image.
 For example, the output of such convolution can be a blurred image. 
 Convolution with a Gaussian kernel is particularly common. 
@@ -21,7 +21,7 @@ In our setting, the $f$ from the above definition represents the image function 
 \section{Image derivatives}
 \label{sec:imder}
 \term{Image derivatives} of an image function are analogous to derivatives of a real continuous function.
-They allow us to meassure spacial changes in an image by expressing the rate of image intensity change in a particular direction. 
+They allow us to measure spacial changes in an image by expressing the rate of image intensity change in a particular direction. 
 High values often indicate an edge in the image data. 
 They are defined as
 \begin{align*}
@@ -118,7 +118,7 @@ Note that this value is going to be zero for a pair of identical images.
 
 For the second metric, % XXX tady je to slovo metric taky 
 we need to recall the definition of \term{entropy} (sometimes also called \term{Shannon entropy}). 
-It can be viewed as a meassure of information complexity of a random variable. 
+It can be viewed as a measure of information complexity of a random variable. 
 \begin{definition} 
 The entropy $H$ of a random variable $X$ with probability distribution $P(X)$ is defined as % XXX zkontrolovat, jestli to skutecne je probability distribution 
 \begin{align*}
@@ -126,7 +126,7 @@ The entropy $H$ of a random variable $X$ with probability distribution $P(X)$ is
 \end{align*}
 where $\E[\cdot]$ is the expected value operator.
 \end{definition}
-In \cv, it is used to meassure the ``complexity'' of the image histogram when the underlying random variable is set as $X = I(\x)$, where $\x$ is a uniformly randomly generated image position. 
+In \cv, it is used to measure the ``complexity'' of the image histogram when the underlying random variable is set as $X = I(\x)$, where $\x$ is a uniformly randomly generated image position. 
 A constant, uniform image attains minimum entropy while random noise maximizes it. 
 
 We can now introduce the \term{mutual information} of two images. 
@@ -145,7 +145,7 @@ High mutual information indicates a large reduction in uncertainty and vice vers
 Mutual information of two images depends only on their joint histogram. 
 Again, this value attains zero for a pair of identical images. 
 However, it remains zero even after, e.g., increasing the brightness of one of the images. 
-Thus, this meassure is invariant under illumination changes, which is of great importance when matching photos taken in an uncontrolled environment. 
+Thus, this measure is invariant under illumination changes, which is of great importance when matching photos taken in an uncontrolled environment. 
 
 \section{Projective geometry}
 \label{sec:projective}
@@ -158,7 +158,7 @@ Projective plane $\P^2$, or generally projective space $\P^n, n \in \N$, is obta
 Numerically, the points in $\P^n$ are represented using non-zero vectors from $\R^{n+1}$.
 Suppose we have a point $(x, y)$ in the Euclidean plane.
 This point in projective geometry is expressed by the vector $(x, y, 1)$ and any of its non-zero multiples $k \cdot (x, y, 1), k \neq 0$.
-These are called \term{homogenous coordinates} of the point.
+These are called \term{homogeneous coordinates} of the point.
 In what follows, we identify the point in a projective space with the vector of its homogeneous coordinates. 
 To get back the Euclidean coordinates we simple divide the first two coordinates by the third.
 We can notice that none of the points $(x, y)$ from Euclidean space corresponds to a projective point of the form $(x, y, 0)$, because the operations $\frac{x}{0}$ and $\frac{y}{0}$ are undefined.
@@ -201,7 +201,7 @@ Most importantly, non-linear distortion of the image (e.g., barell distortion) c
   %X_4
 %\end{bmatrix},
 %\end{align*}
-%where $\T$ is the transformation from homogenous coordinates to Euclidean space.
+%where $\T$ is the transformation from homogeneous coordinates to Euclidean space.
 \begin{figure}[h]
   \label{fig:camera}
   \centering{\includegraphics[width=7.5cm]{img/projective_camera.pdf}}
@@ -234,7 +234,7 @@ However, in our case, the matrix is going have only one degree of freedom due to
 \section{Integral images}
 
 % Later in this work we work with the term of integral images. 
-\term{An integral image}, also known as \term{summed area table}, allows fast and efficient computation of a sum of image intesity values inside an arbitrary rectangular area.
+\term{An integral image}, also known as \term{summed area table}, allows fast and efficient computation of a sum of image intensity values inside an arbitrary rectangular area.
 A pixel of an integral image represents the sum of all of the original image's pixels that lie to the left and above the considered position: 
 \begin{equation*}
 \K_I(\x) := \sum_{i \le x} \sum_{j \le y} I(i,j),
