@@ -1,18 +1,34 @@
 \chapter{Implementation}
 \label{chap:implementation}
 
-This chapter is devoted to the implementation of our software.
-The result of this work is an Android application that allows to take photos with a camera, browse them and pick a pair of images for the resulting 3D model of the disparity map which was calculated from the selected input data.
-The expected input data are described in Section \ref{prob}.
+In this chapter, we describe how we connected the computer vision algorithms described in Chapter \ref{chap:algorithms} to obtain a program solving the task of 3D reconstruction on a mobile phone. 
+The result of this work is an Android application that allows the user to take photos with a camera, browse them and pick a pair of images to reconstruct. 
+The reconstructed image is then visualized in 3D using OpenGL ES.
+The properties of the input pair of photos are described in Section \ref{prob}.
 
-Our task was to design an algorithm solving the problem of calculation the depth information from a pair of images on the Android platform.
-When implementing the software for Android we are limited to the input data of lower quality.
-The Android camera lenses are made of plastic and cause a significant non-linear distortion which can not be easily simulated.
-Also, due to the limited capacity of calculation memory of mobile phones we need to down-sample the resolution of the input images.
-These problems disallow using common approaches of solving the dens corresponding problem.
+The following are the main obstacles we are faced with when trying to solve this problem: 
+\begin{itemize}
+\item mobile photos typically have a limited computational power, 
+\item they have limited operational memory, 
+\item most importantly, the optical properties of digital cameras included in a typical mobile phone are of mediocre quality at best. 
+\end{itemize} 
+The last property is particularly troublesome for us, since it implies -- among other problems -- that the captured image is defomed by an unknown non-linear transformation. 
+% This is an issue often encountered in professional-grade cameras as well. 
+% However, in these cases, this distortion can be efficiently estimated and accounted for since it typically behaves in a constrained manner. 
+% For cheap mobile phone cameras, this is not possible and thus we have to keep in mind that 
+This implies that the model of projective camera of Section \ref{sec:projective} and the epipolar constrains of Section \ref{sec:epi} are only a rough approximation. 
+However, this significantly restricts the choice computer vision algorithms to apply. 
+For example, algorithms for the dense reconstruction problem are often heavily dependent on having a precise model of epipolar constrains in the image pair. 
 
-In Section \ref{sec:impl_outline} of this chapter we enumerate the subtasks and describe how was our approach designed.
- 
+We solve this problem using a combination of sparse feature matching and the classical optical flow algorithm, both described in Chapter \ref{chap:algorithms}. 
+Specifically, we employ the SURF algorithm because it has better computational efficiency compared with the SIFT algorithm.
+Sparse feature matching can be successfully performed without any kind of epipolar constraint and thus, the innacuracy of the camera model is not an issue. 
+However, the resulting 3D information is only a sparse 3D point cloud reconstruction of the scene. 
+Since this is insufficient for our purposes we then repeat optical flow calculation on pairs of neighbourhoods of corresponding features. 
+
+In XXX we discuss this method in detail. 
+The final section is devoted to technical aspects of the implementation. 
+
 \section{Implementation outline}
 \label{sec:impl_outline}
 In the this section we describe the way how was the task solved, what algorithms were chosen and how was the application implemented.
