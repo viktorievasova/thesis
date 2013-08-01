@@ -35,12 +35,12 @@ A generalization of this is often considered since the above discretization is n
 \label{sec:gaussder}
 
 Scale-space of an image is a series of gradually more and more smoothed images obtained by convolving the original image with Gaussian kernels of increasing size.
-Formally, it is a series of image functions $\L$ defined as the convolution of the image function $\func$ and the Gaussian kernel $\gauss$, where $t$ is the corresponding variance: % XXX nechceme sjednotit to, jestli budeme tu varianci oznacovat jako $t$ nebo $\sigma$? 
+Formally, it is a series of image functions $\L$ defined as the convolution of the image function $I(x, y)$ and the Gaussian kernel $\gauss$, where $t$ is the corresponding variance: % XXX nechceme sjednotit to, jestli budeme tu varianci oznacovat jako $t$ nebo $\sigma$? 
 %\begin{align*}
 %\gauss = \frac{1}{2\pi t} e^{-(x^2+y^2)/2t}
 %\end{align*}
 \begin{align*}
-\L = \func \convolution \gauss.
+\L = I(x, y) \convolution \gauss.
 \end{align*}
 
 To this scale-space representation we can apply local derivatives at any scale.
@@ -61,7 +61,7 @@ The Laplacian of a function with $n$-dimensional support is the divergence of th
 \end{align*}
 In image processing we usually consider $2$-dimensional space, thus the \term{Laplacian} becomes: 
 \begin{align*}
-\nabla ^{2}f(x, y)&=\fpp{\partial x^2} + \fpp{\partial y^2}.
+\nabla ^{2}I(x, y)&=\ipp{\partial x^2} + \ipp{\partial y^2}.
 \end{align*}
 \end{definition} 
 
@@ -203,9 +203,9 @@ Most importantly, non-linear distortion of the image (e.g., barell distortion) c
 %\end{align*}
 %where $\T$ is the transformation from homogeneous coordinates to Euclidean space.
 \begin{figure}[h]
-  \label{fig:camera}
   \centering{\includegraphics[width=7.5cm]{img/projective_camera.pdf}}
   \caption{Perspective projection of a point $\x$ on the image plane of a camera with camera center in the coordinate system's origin. }
+  \label{fig:camera}
 \end{figure}
 
 \subsection{Epipolar geometry}
