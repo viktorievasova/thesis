@@ -1,22 +1,33 @@
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-Our work gives satisfiable results for photos of highly textured objects.
-For the testing input data, in the case of a bust of Ema Destinová we get a 3D model shaping the head and a part of a wall in the background.
-In the second case, the input images give us a result as an inclined plane in the angle of the memorial in the picture.
-These results are comparable with the real appearance of the scenes.
+We have been testing our application on a Sony ST27i mobile device.
+On the testing input data in Figure \ref{fig:input_samples} we obtained satisfiable results as is shown in Chapter \ref{chap:eval}.
+For the testing input data, in the case of a bust of Ema Destinová we obtained a 3D model shaping the head and a part of a wall in the background.
+In the second case, the input images gave us a result as an inclined plane in the angle of the memorial in the picture.
+These results are comparable with the real appearance of the scenes and can be indicated as acceptable results.
 
-However, while we use a sum of absolute differences to detect the initial relative position, our approach fails on pairs of images with varying illumination.
-Also it does not give good result on the images influenced by noise, which is quite common on the images taken by mobile phone camera, 
-especially when the lightening conditions are not ideal.
-
+Our implementation fails and does not give good results on noisy images or images of chaotic scenes.
+In such a kind of scenes the features are matched incorrectly or is not even detected a sufficient number of SURF keypoints to reconstruct the 3D information. 
+With high probability, the relative position of a pair of images of different illumination will not be estimated correctly.
+Because of the relevant restriction on the area of the shape of an oriented rectangle where are corresponding points searched (as we explained in Chapter \ref{chap:implementation}),
+it is not possible to match the keypoints correctly when the registration fails.
 
 \section{Future work}
-As we mentioned, the results on the pair of input images with different illumination does not give good results.
-We could solve it by using other approach e.g. the mutual information.
+
+While we use a sum of absolute differences to detect the initial relative position, our approach fails on pairs of images with varying illumination.
+Also it does not give good results on the images influenced by noise, which is quite common on the images taken by mobile phone camera, 
+especially when the lightening conditions are not ideal.
+This can be solved by obtaining the information of relative position by using mutual information while the mutual information is independent to the information of illuminance.
 
 Our implementation could be also extended to the input of $n$ photos. 
 It would be necessary to find the relative position of all pairs of photos.
-This does not have to be calculated explicitly, but possibly we could estimate the position of two images when having the information about their position with one other image.
-Detection and matching of SURF keypoints would be applied only to the pairs with an overlap.
+This does not have to be calculated explicitly, but possibly we could estimate the position of two images when having the information about their position with the third image.
+Detection and matching of SURF keypoints would be applied only to the pairs with an overlapping part.
 Most of the implemented methods were designed to be easily extended for this purpose.
+
+For a simple usage of the application we tried to implement an auto-capturing option for taking pictures.
+However, we have not managed to optimalize it's behaviour, because it was not the main goal of this work. 
+Therefore, it could be an option how to extend the application.
+If we go even further, this way of using the device's equipment such an accelerometer can be used to estimate the relative position of taken pictures detected from the motion of the device.
+
