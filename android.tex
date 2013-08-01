@@ -68,9 +68,9 @@ Compared to the situation on the majority of conventional platforms, Android int
 Actually, the system expects a certain specific architectural structure of the application expressed using concepts from object oriented programming. 
 A typical Android application is be decomposed into several classes, each being a descendant of a particular class provided by the SDK. 
 Through this, requirements on what and how the application's class has to implement are imposed. 
-This approach allows, e.g., sophisticated interaction between different aplications running on the same phone. 
+This approach allows, e.g., sophisticated interaction between different applications running on the same phone. 
 For example, one application can use a list of contacts maintained by another application without the developers of the latter having to set up any protocols or data exports -- they only need to obey the software developement principles of the platform. % XXX zkontrolovat, jestli je tohle pravda
-Thanks to this, the user data are seamlessly protected from an unauthorized access by the system through the principle of least priviledge. 
+Thanks to this, the user data are seamlessly protected from an unauthorised access by the system through the principle of least privilege. 
 In the above-mentioned example, the access to the list of contacts would not be granted unless it is listed in the accessing application's manifest file and this requirement has been authorized by the user. 
 Since these properties of the platform are rather unique, we devote this section to discuss them. 
 
@@ -94,14 +94,14 @@ For example, if the application needs to run a long-term computation, the user c
 \term{A content provider} manages sharing data across applications.
 When the app is storing data, for example in the file system or an SQLite database, the content provider interface can be used to access or even modify the data from other applications. 
 
-The platform utilizes additional classes of components besides the above-mentioned ones (e.g., broadcast recievers). 
-However, we omitt them for the sake of brevity. 
+The platform utilizes additional classes of components besides the above-mentioned ones (e.g., broadcast receivers). 
+However, we omit them for the sake of brevity. 
 
 %%% docteno sem 
-The interaction between various components and activities is faciliated by \term{intents.} 
+The interaction between various components and activities is facilitated by \term{intents.} 
 An intent is a message to the system to invoke new activity, service or broadcast.
 % It is a component activating mechanism in Android.
-The reader is refferred to the Android SDK documentation for more information about activities, services, content provides, intents, etc. 
+The reader is referred to the Android SDK documentation for more information about activities, services, content provides, intents, etc. 
 
 \section{The Activity Lifecycle}
 \label{sec:lifecycle}
@@ -153,7 +153,7 @@ while \term{RelativeLayout} positions the elements in relation to their parent o
 
 With the layout defined, the developer can then utilize the UI elements offered by the SDK, such as \term{menus}, \term{action bars}, \term{dialogs} or \term{toasts}.
 There are several types of \term{menus} such as \term{options menu} or \term{context menu}. % XXX velky nebo maly pismena? 
-The \term{options menu} displays a collection of buttons when the user tapps the menu button typically available on an Android device. 
+The \term{options menu} displays a collection of buttons when the user taps the menu button typically available on an Android device. 
 From the Android version 3\@.0 higher, the options menu items are included in the action bar after touching the action overflow button. % XXX co jsou ty veci? 
 The \term{context menu} is a floating menu associated with a particular element in a view displayed after touching the element.
 
@@ -177,7 +177,7 @@ The sensor events are access using an instance of the \term{SensorManager} class
 \section{Data Storage}
 
 There are several possibilities for storing application data in Android. 
-The internal storage is preferrable when we do not want other applications to access them. 
+The internal storage is preferable when we do not want other applications to access them. 
 The read and write operations are performed using instances of \term{FileInputStream} and \term{FileOutputStream}.
 
 However, media files such as pictures, video files or audio records are expected to be shared and accessible from other applications.
