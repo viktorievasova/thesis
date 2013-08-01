@@ -19,6 +19,14 @@ When we have the approximate overlap, we take the image of the scale above and t
 This we repeat until we look over all of the levels of the scale-space or for computational efficiency we estimate the result satisfiable when the width or hight of the investigating scale image is higher then a constant value.
 Because we expect the image input in the size of approximately 1000 $\times$ 800 pixels, for the experiments in our work we set the constant to 200. 
 
+\begin{figure}[h]
+\centerline{
+\includegraphics[width=4.5cm]{img/ema_overlap.png}
+\includegraphics[width=4.5cm]{img/ema_buckets.png}}
+\caption{Left: The result of the registration where the process of upscaling was stopped when the height of the image was over 200px. Right: The division of an image into square-boxes.}
+\label{fig:overlap}
+\end{figure}
+
 The next step of the process is detection of keypoints which are detected with the SURF detector.
 We divide the images into square-boxes of the same size and to each square-box we assign an array of keypoints situated in it.
 Because of the previous calculation of approximate overlap we do not have to match all keypoints in the image, but we choose only the keypoints lying in the overlap.
@@ -29,9 +37,16 @@ each of them we try to match with one keypoint extracted in the second image but
 To decrease the computational time we use the pre-calculated square-boxes to find the keypoints of the second image lying in this area.
 To avoid mismatches we reject the matches where the matched keypoints differs too much in the orientation or if there are more than one obvious potential points for the match.
 
-When we know the more precious relative position of the images, we investigate the keypoints one more time.
+\begin{figure}[h]
+\centerline{
+\includegraphics[width=9cm]{img/ema_direction.png}}
+\caption{The most robust match chosen from the keypoints with response higher than 4000. According to this match the more accurate relative position of images is estimated.}
+\label{fig:overlap}
+\end{figure}
+
+When we know the more accurate relative position of the images, we investigate the keypoints one more time.
 Now we iterate all of them. 
-Each keypoint in the first image we try to match with a keypoint in the estimated corresponding surrounding area in the second image in the shape of oriented rectangle computed based on the more precious relative image position.
+Each keypoint in the first image we try to match with a keypoint in the estimated corresponding surrounding area in the second image in the shape of oriented rectangle computed based on the more accurate relative image position.
 % and try to match them in the corresponding area in the shape of oriented rectangle.
 Matched keypoints which differs too much in the orientation or are not obviously the best match we reject again.
 

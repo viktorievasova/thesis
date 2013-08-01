@@ -103,79 +103,71 @@ Concatenating the values in these histograms results in a 128-dimensional vector
 \section{Speeded-Up Robust Features}
 
 Another popular feature detector/descriptor is the Speeded Up Robust Features (SURF) algorithm, introduced by Bay et al. \cite{surf2006}. 
-It is influenced by the SIFT algorithm described above and is based on the computation of Haar wavelet responses and Hessian-matrix approximation. 
-Similarly to SIFT, keypoints are again detected in a scale-space to achieve invariance to scaling. 
-% To build a robust descriptor we need to detect keypoints that are invariant to scale thus we create a scale-space.
-% That is because often is required to detect objects in different distances.
-% A scale-space is usually implemented as a pyramid of subsequently smoothed images by Gaussian filter as described in the previous section.
-In this approach, however, the scale-space is not constructed explicitly and integral images are employed instead to descrease the computation time. % , see previous chapter to get detailed information about integral images.
-% So we do not have to iteratively apply the same filter, but we can reach the scaling by fast computing of integral image where the speed is independent to the size of filter.
-%%more about scaling...
+It is influenced by the SIFT algorithm described above and is based on Hessian-matrix approximation and the computation of Haar wavelet responses. 
+The major stages are to detect the features, estimate their orientation and then to each of them assign a descriptor.
+Similarly to SIFT, keypoints are again detected in a scale-space to achieve invariance to scaling.
+In this approach, however, the scale-space is not constructed explicitly and integral images are employed instead to decrease the computation time. 
 
-The detection of interest points is performed using an approximation of the Hessian-matrix.
-The Hessian for a point $\x = (x, y)$ in an image $I$ at scale $\sigma$ is defined as
-$$H(\x, \sigma) = \begin{pmatrix} 
-L_{xx}(\x, \sigma) & L_{xy}(\x, \sigma) \\ 
-L_{yx}(\x, \sigma) & L_{yy}(\x, \sigma)
-\end{pmatrix},$$
-where $L_{xx}$ presents the convolution of the Gaussian second order derivative with the image:
-\[
-L_{xx}(\x, \sigma) = \frac{\partial ^{2}}{\partial x^{2}}g(\sigma) * I
-\]
-and similarly for $L_{xy}$ and $L_{yy}$
-\[
-L_{xy}(\x, \sigma) = \Big(\frac{\partial ^{2}}{\partial x \partial y}g(x, y)\Big)(\sigma) * I, 
-L_{xx}(\x, \sigma) = \Big(\frac{\partial ^{2}}{\partial y^{2}}g(x, y)\Big)(\sigma) * I.
-\]
-\todo{radsi bych se tomu vektoru x vyhnul a napsal x, y -- kvuli tem parcialnim derivacim; hlavne dejme pozor, abychom pouzivali jednotne znaceni tech derivaci -- stejne jako v podkapitole o tom, co je Gaussovska derivace}
+The SURF feature detection is based on detecting blob structures using Gaussian kernels.
+It uses the Hessian matrix of the convolution of the image with the second derivative of Gaussian.
+The determinant of this Hessian expresses the local change around the area.
+The points that are simultaneously local extrema of both the determinant and the trace of the Hessian matrix are chosen as candidate keypoints.
+%The detection of interest points is performed using an approximation of the Hessian-matrix.
 
-% Since the Gaussian is considered as over-rated, in this approach we use box-filters instead and obtain speeded-up variation.
-A box filter approximation of a convolution with a Gaussian-derivative kernel can be computed quickly using integral images. 
-\todo{mozna nekde rict, jak presne se to aproximuje, nejlip obrazkem; asi by to mohlo byt v sekci o integralnim obrazu}
-% The size of a box filter corresponds to the size of the kernel. 
-The approximations are computed for every scale of the scale-space and 
-the points that are simultaneously local extrema of both the determinant and the trace of the Hessian matrix are chosen as candidate keypoints. 
-The trace of the Hessian matrix corresponds to the Laplacian of Gaussians (LoG) \todo{meli bychom rict LoG ceho}.
-If we denote the results of applying the above-mentioned box filters as $D_{xx}$, $D_{yy}$ and $D_{xy}$, we get: 
-\[
-\det(H) = D_{xx} D_{yy} - \omega^{2} D_{xy}^{2}.
-\]
-\todo{porad neni uplne dobre definovno, co je to ten box filter; idealni by bylo pridat to do sekce o integralnim obrazu}
+However, the convolution is very costly to calculation time.
+It is approximated and speeded-up with the use of integral images and approximated kernels (\ref{sec:integral_images}).
+In this way the algorithm is very fast.
+
+The SURF algorithm does not build the scale-space by explicit down-sampling the images.
+To detect the features across scales SURF uses larger and larger Gaussian kernels.
+The larger Gaussian kernel is used, the more down-sampled image is investigated.
 
 Similarly to SIFT, the SURF descriptor is a vector describing the distribution of intensity values within the neighbourhood of the keypoint. 
 The difference lies mainly in the fact that the SURF descriptor is constructed using Haar wavelet responses around the point of interest. % TODO skutecne sum? mozna mi neni jasne, v jakem smyslu
-At first, to be invariant to image rotation, a dominant orientation is established for each detected keypoint. 
-The Haar wavelet responses in $x$ and $y$ direction are calculated 
-and they are summed within a sliding orientation window of size $\mathb{\frac{\pi}{3}}$ afterwards. \todo{tady by mi nebylo jasne, co se tam s tim sliding window dela; v tuhle chvili mam v ruce dve cisla, hodnotu derivace podle x a podle y -- jak do toho vstupuje sliding window?}
-The summed responses yield a local orientation vector. \todo{jenom jeden vektor? Jak to, ze zahy budu vybirat ten nejdelsi z nich?}
-The longest such vector is used to establish the orientation of the feature. 
+The Haar wavelet responses can be calculated efficiently with integral images again.
+Before the descriptor calculation, to be invariant to image rotation it is needed to determine the orientation. 
+By determining a unique orientation for a interest point, it is possible to achieve rotational invariance. 
+Before the descriptor is calculated the surrounding area of the detected feature is rotated to its direction.
 
-% The first step to extract the descriptor is constructing a square region around the keypoint aligned with dominant orientation.
-The local orientation and scale is again used to obtain a reference frame ensuring that the resulting descriptor is not affected by rotation and scaling of the input image. 
-The size of the inspected region around the keypoint is set to $20s$, where $s$ is the scale where it was detected. \todo{nemelo by $s$ byt nejak svazane s rozptylem $\sigma$?}
-We split the region into $4 \times 4$ regular square subregions and for each of them we compute Haar wavelet responses $d_x$ and $d_y$
-in a $5 \times 5$ grid. \todo{tady porad rikame ``pocitame Haar wavelet responses'' ale jde nam o to vypocitat ty derivace; ja bych to napsal tak, ze se na zacatku nadefinuji ty derivace aproximovane temi integral image a pak uz se jen pouziva dokola odkazuje se na to nejakym konkretnejsim terminem; navic mi neni jasne, jaky je rozdil mezi temi box filtery a Haar wavelety} 
-The sum of the responses for $d_x$ and $d_y$ and their absolute values $|d_x|$, $|d_y|$ separately results in a descriptor $v = (\sum{d_x}, \sum{d_y}, \sum{|d_x|}, \sum{|d_y|})$ for each subregion.
+The SURF descriptor describes the surrounding area of the feature.
+This area is divided to 4 $\times$ 4 subareas.
+To each of these subareas the Haar wavelet responses are calculated in the $x$ and $y$ directions and then are described by the vector
+$$v = (\sum{d_x}, \sum{d_y}, \sum{|d_x|}, \sum{|d_y|}),$$
+where  $d_x$ and $d_y$ are the wavelet responses in $x$ and $y$ directions.
 Concatenating this for all $4 \times 4$ subregions gives $64$-dimensional vector descriptor.
 
-Matching the SURF descriptors between two images can be speeded-up by including the trace of the Hessian (Laplacian) to the process of finding corresponding keypoints.
-We exploit the sign of Laplacian that distinguishes bright blobs on dark background from the reverse situation.
-In the matching stage we compare only features if they have the same sign -- type of contrast. 
+Matching the SURF descriptors between two images can be speeded-up by including the trace of the Hessian (Laplacian) to the process of finding corresponding keypoints. 
+We exploit the sign of Laplacian that distinguishes bright blobs on dark background from the reverse situation. 
+In the matching stage we compare only features if they have the same sign – type of contrast. 
 This costs no additional computation time since this quantity has already been computed at a previous stage.
+
+
+
 
 \section{SIFT vs. SURF}
 Both SIFT and SURF are popular feature descriptors based on the distribution of intensity around the interest point.
-% TODO: kdyz uz bysme nasledujici chteli tvrdit, je nutne odcitovat nejaky benchmarkovaci paper: SIFT used to be evaluated as the most robust and distinctive descriptor for feature matching.
-SURF has been shown to have similar performance to SIFT, but being much faster. \todo{odkaz na nejakou studii porovnavajici ruzne detektory/deskriptory}
+SURF has been shown to have similar performance to SIFT, but being much faster.
 The work \cite{surf2006} highlights the fast computation of the descriptor.
-SURF describes image three times faster than SIFT. \todo{jestli je tohle napsane v tom puvodnim clanku, tak ty predchozi vety spojme a napisme to tak, at ta informace z toho je patrna}
 The element enabling this speed-up are the approximations using integral images. 
-Also, the SURF descriptor is a 64-dimensional vector, enabling faster computation of the Euclidean distance between the descriptors compared to the 128-dimensional SIFT descriptors. % in the comparison to 128 integers describing SIFT feature.
-% Hence the SIFT matching costs more calculation time.
-Furthermore, due to the global integration of the SURF-descriptor, it stays more robust to various perturbations than the SIFT descriptor. \todo{potrebujeme napsat presneji, zejmena by se hodil odkaz na to, odkad to tvrzeni je cerpano}
+Also, the SURF descriptor is a 64-dimensional vector, enabling faster computation of the Euclidean distance between the descriptors compared to the 128-dimensional SIFT descriptors.
+However, the performance depends on many factors.
+The results of comparing and testing SIFT against SURF can be found in \cite{siftsurf2001} and \cite{siftsurf2009}.
 
-SURF offers invariance to rotation and limited levels of image blurring.
-On the other hand, SIFT is more robust under illumination changes and viewpoint changes. \todo{znovu neni jasne, jestli popisujeme vlastni zkusenost nebo neco z nejakeho clanku (jakeho?)}
+In this \cite{siftsurf2001} study the robustness of SIFT and SURF was tested under several different conditions.
+It was shown that SIFT and SURF gives similar results when testing the robustness to rotation, illumination and noise 
+(the performance of both SIFT and SURF rapidly  decreased on the images with ``salt and pepper" noise).
+When testing the viewpoints, two images available in the dataset taken from different viewpoints were chosen and in this case SIFT outperformed SURF.
+In general matching the results show that all SIFT and SURF descriptors perform well on all datasets.
+
+
+In \cite{siftsurf2009} is shown that SIFT still outperform SURF in scale, rotation and blur, but is slow and not good at illumination changes.
+SURF gives the best results in computational time and when testing illumination, but it is not stable to rotation and illumination changes. 
+This shows that none of these detectors/descriptors is best for all deformation.
+Choosing the method mainly depends on the application.
+
+Both of the studies have similar results except the calculation time.
+While in \cite{siftsurf2001} was SIFT the most efficient, in \cite{siftsurf2009} the SURF was the fastest.
+
 
 % \section{Max-flow dense correspondence algorithm}
 
