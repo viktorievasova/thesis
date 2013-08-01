@@ -55,8 +55,8 @@ These results are comparable with the real appearance of the scenes.
 
 \begin{figure}[h]
 \centerline{
-\includegraphics[width=7.0cm]{img/ema_3Dresult.png}
-\includegraphics[width=7.0cm]{img/memorial_3Dresult.png}}
+\includegraphics[width=6.5cm]{img/ema_3Dresult.png}
+\includegraphics[width=6.5cm]{img/memorial_3Dresult.png}}
 \caption{The output as a 3D model of disparity. The model of Ema Destinová sculpture (left) and of a memorial (right).}
 \label{fig:outupt_samples}
 \end{figure}
@@ -64,16 +64,41 @@ These results are comparable with the real appearance of the scenes.
 On the other hand for images with noise or images which are not highly textured, the result is usually a bunch of mismatches so the 3D model does not correspond with the reality.
 An example of such input is shown in Figure \ref{fig:bad_example}.
 
+
+
+\begin{figure}[h]
+\centering
+
+\begin{subfigure}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=4.5cm]{img/bad_input1.png}
+\caption{The left image of the input image.} \label{x0}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=4.5cm]{img/bad_input2}
+\caption{The right image of the input image.} \label{x2}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=5.0cm]{img/bad_result.png}
+\caption{The result of the pair of images.} \label{x3}
+\end{subfigure}
+
+\caption[]{An example of a pair of images resulting in a nonrealistic model.} 
+\label{fig:bad_example}
+\end{figure}
+
 When testing our application we have experimented with some parameters to get the best result.
 In Figure \ref{fig:matching_comparison} we can see how was the result of matching affected when choosing different parameters for the second matching of SURF keypoints.
 Each keypoint in the first image was matched with a keypoint in the estimated corresponding surrounding area in the second image in the shape of oriented rectangle computed according to the more accurate relative image position.
-This oriented rectangle consists of two rectangles -- one exterior (60 $\times$ 120 pixels large) and one smaller localised in the middle of the previous one.
+This oriented rectangle consists of two rectangles -- one exterior (60 $\times$ 120 pixels large) and smaller one localised in the middle of the previous one.
 The corresponding keypoint was accepted only if it was located in the inner one.
 In the first case, the size of the inner rectangle was set to 20\% of the width and 35\% of the height of the size of the larger rectangle.
 The second image shows the result when the size was set to the 10\% of the width and 20\% of the height.
 It was shown that the second case gives better results and we can see that there is less mismatches than in the first case.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centerline{
 \includegraphics[width=4.0cm]{img/rectangle_w_02_h_035_croped.png}
 \includegraphics[width=12.1cm]{img/matching_w_02_h_035.png}}
