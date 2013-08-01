@@ -174,9 +174,9 @@ This makes it possible to build on the grounds of this well-understood area.
 
 \term{Projective camera} represents a model of central perspective projection.
 It maps points from $\P^3$ (world) to $\P^2$ (image).
-In Figure \ref{fig:camera} we can see the camera geometry.
-There, the \term{camera centre} is positioned at the coordinate origin, while the image plane is in front of the camera.
-The line perpendicular to the \term{image plane} with one end-point in the centre is called \term{the principal axis} of the camera and its intersection with the image plane is \term{the principal point}.
+In Figure \ref{fig:camera}, we can see the camera geometry.
+The \term{camera centre} is positioned at the origin of the coordinate frame, while the image plane is in front of the camera.
+The line perpendicular to the \term{image plane} going through the camera centre is called \term{the principal axis} of the camera and its intersection with the image plane is \term{the principal point}.
 The world point is projected by intersecting a ray going through the camera center and the world point with the image plane. 
 This mapping from $\P^3$ to $\P^2$ can be algebraically expressed as multiplication with a real $3 \times 4$ matrix $\Proj$. 
 Note that the overall scale of the matrix does not affect the result. 
@@ -203,8 +203,8 @@ Most importantly, non-linear distortion of the image (e.g., barell distortion) c
 %where $\T$ is the transformation from homogenous coordinates to Euclidean space.
 \begin{figure}[h]
   \label{fig:camera}
-  \centering{\includegraphics[width=96mm]{img/perspectivecamera.png}}
-  \caption{\todo{tento obrazek jsem stahla z googlu, mel by se nahradit}} % XXX tohle musime zmenit 
+  \centering{\includegraphics[width=7.5cm]{img/projective_camera.pdf}}
+  \caption{Perspective projection of a point $\x$ on the image plane of a camera with camera center in the coordinate system's origin. }
 \end{figure}
 
 \subsection{Epipolar geometry}
@@ -246,8 +246,8 @@ of the original intensities inside any rectangular region (see Figure \ref{fig:i
 
 \begin{figure}[h]
   \label{fig:integral}
-  \centering{\includegraphics[width=96mm]{img/integral_image.png}}
-  \caption{The sum of any rectangular region can be calculated by only three additions: $\sum = C - D - B + A$.}
+  \centering{\includegraphics[width=7.5cm]{img/integral_image.pdf}}
+  \caption{The sum of any rectangular region can be calculated by only three additions: $C - D - B + A$.}
  \end{figure}
 
 
