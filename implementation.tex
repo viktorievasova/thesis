@@ -76,8 +76,8 @@ In this way the registration runs in approximately two seconds for a pair of the
 
 \begin{figure}[H]
 \centerline{
-\includegraphics[width=4.5cm]{img/ema_overlap.png}
-\includegraphics[width=4.5cm]{img/ema_buckets.png}}
+\includegraphics[width=4.0cm]{img/ema_overlap.png}
+\includegraphics[width=4.0cm]{img/ema_buckets.png}}
 \caption{Left: The result of the registration where the process of upscaling was stopped when the height of the image was over 200px. Right: The division of an image into square-boxes.}
 \label{fig:overlap_and_buckets}
 \end{figure}
@@ -90,13 +90,13 @@ We speeded-up the computation by dividing the images into square-boxes of the sa
 When finding a match for the feature in the first image, we estimate it's corresponding surrounding area in the second image 
 and find the square-boxes which are at least partially situated in it.
 From these square-boxes we choose the keypoints lying in the corresponding area and find the best match for the keypoint.
-At first we find the most robust match from only the SURF keypoints where the the value of Hessian reaches the specified value.
+At first we find the most robust match from only the SURF keypoints where the the value of the Hessian reaches the specified value.
 Based on this match we estimate the direction of the shift which gives us more accurate relative position of the input pair of images.
 
 \begin{figure}[H]
 \centerline{
-\includegraphics[width=9cm]{img/ema_direction.png}}
-\caption{The most robust match chosen from the keypoints with response higher than 4000. According to this match the more accurate relative position of images is estimated.}
+\includegraphics[width=8cm]{img/ema_direction.png}}
+\caption{The most robust match chosen from the keypoints with the Hessian over 4000. According to this match the more accurate relative position of images is estimated.}
 \label{fig:robust_match}
 \end{figure}
 
