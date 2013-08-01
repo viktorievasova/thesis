@@ -46,7 +46,8 @@ Recently, the possibility to generate $360^\circ$ panoramas and to upload the in
 
 Microsoft PhotoSynth is a closed-source application with most of the computation running on Microsoft's servers. 
 It extends a system called {\it Photo Tourism} developed by Snavely, Seitz and Szeliski \cite{snavely2007, snavely2006}.
-To obtain accurate information about the positions of the cameras it applies the SIFT algorithm (discussed in Section \ref{sec:sift}) to detect points of interest.These are then matched across images using an implementation of an approximate nearest neighbour algorithm and filtered using the RANSAC paradigm \cite{ransac}.
+To obtain accurate information about the positions of the cameras it applies the SIFT algorithm (discussed in Section \ref{sec:sift}) to detect points of interest. 
+These are then matched across images using an implementation of an approximate nearest neighbour algorithm and filtered using the RANSAC paradigm \cite{ransac}.
 The theory presented in the classical monograph \cite{multipleview} is then applied to obtain external and internal camera calibration (if there is relevant EXIF information associated with the photo, then the software uses this to obtain an initial guess of the internal camera calibration parameters).
  
 % One of the first applications that used to create a 3D model from a set of pictures of an object was Photosynth, designed by Microsoft in cooperation with the University of Washington \todo{citace jak na web PhotoSynthu tak na clanky Snavellyho; odstranil bych to, ze to byla jedna z prvnich aplikaci}. 

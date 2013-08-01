@@ -33,6 +33,7 @@ The SIFT descriptor is also partially invariant to illumination changes and to a
 % Due to the fact that our descriptors are vectors, we can match them according to the distance in the space, using Euclidean distance for example.
  
 \section{Scale-Invariant Feature Transform}
+\label{sec:sift}
 
 The scale-invariant feature transform (SIFT) was introduced by Lowe in \cite{lowe1999}, building on a previous work by Lindeberg \cite{lindeberg1998}. 
 The paper describes both a feature detector and descriptor. 
@@ -59,9 +60,9 @@ The first step in the feature detection part of the algorithm is to identify can
 For this, Gaussian scale-space is employed. 
 Recall its definition from Section \ref{sec:gaussder}:
 \[
-L(x, y; \sigma) = g(x, y, \sigma) * f(x, y),
+L(x, y; \sigma) =  I(x, y) * g(x, y, \sigma),
 \]
-where $\sigma$ is the deviation of the Gaussian function, $*$ the convolution operator, $f(x, y)$ is the input image, and $g(x, y)$ the Gaussian function
+where $\sigma$ is the deviation of the Gaussian function, $*$ the convolution operator, $I(x, y)$ is the input image, and $g(x, y)$ the Gaussian function
 \[
  g(x, y, \sigma) = \left( \frac{1}{\sqrt{2\pi \sigma _1^{2}}} \cdot e^{-\frac{x^{2}+y^{2}}{2\sigma_1^{2}} } \right).
 \]
@@ -69,7 +70,7 @@ where $\sigma$ is the deviation of the Gaussian function, $*$ the convolution op
 To extract the features in the scale-space we detect the local extrema in the difference-of-Gaussian function $D(x, t, \sigma)$.
 The difference-of-Gaussian (DoG) is defined as the difference of two neighbouring images of the scale-space: 
 \[
- D(x, y, \sigma) = L(x, y; 2\sigma) - L(x, y; \sigma) = (g(x, y, 2\sigma) - g(x, y, \sigma)) * f(x, y).
+ D(x, y, \sigma) = L(x, y; 2\sigma) - L(x, y; \sigma) = (g(x, y, 2\sigma) - g(x, y, \sigma)) * I(x, y).
 \]
 Each sample point of the DoG is compared to its eight neighbours in the current scale and nine neighbours on the levels below and above.
 If it is larger than all of these neighbours, it is selected as a maximum; if it is smaller than all of them, it is selected as a minimum. 
