@@ -206,12 +206,12 @@ Below is a simple example of such file:
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
     
         <org.opencv.android.NativeCameraView
             android:id="@+id/camera_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
         
         <RelativeLayout
     	    android:layout_width="200dp"
@@ -271,7 +271,7 @@ It is possible to define a specific layout of an activity for a particular scree
 
 In the \term{src} folder, we have all the .java files representing activities or classes.
 Every Android application has at least one ``main'' activity invoked by the system when the application is launched.
-Due to the activity lifecycle (see Section \ref{sec:lifecycle}) it is necessary to implement the following methods:
+Due to the activity lifecycle (see Section \ref{sec:lifecycle}), it is necessary to implement the following methods:
 \begin{itemize}
 \item \term{onCreate()},
 \item \term{onPause()},
