@@ -44,20 +44,19 @@ The structure of the system is illustrated in Figure \ref{fig:architecture} belo
 \begin{figure}[h!]
     \label{fig:architecture}
     \centering{\includegraphics[width=80mm]{img/software_layers.png}}
-    \caption{The architecture of the system.}
+    \caption{The architecture of the system.} % XXX obrazek vektorove
 \end{figure}
 
 Android applications are written in the Java programming language and run within an instance of the Dalvik Virtual Machine.
 A key part of the application is the AndroidManifest\@.xml file containing installation meta-data, including the permissions needed to run.
 An example of such permission is the ability to use the phone's camera or to access the Internet.
-We concentrate more on activities and their development in the following sections. \todo{O aktivitach jsem zatim nic nerekli. Proc ted rikame ctenari, ze se na ne vic zamerime v dalsi sekci?}
 \begin{figure}[h!]
     \centering{\includegraphics[width=80mm]{img/dalvik.png}}
     \caption{A typical Android application runs within an instance of the Dalvik Virtual Machine.}
 \end{figure}
 
 The tools required for the development of an Android application are the Android Software Development Kit (SDK) and a Java IDE, such as Eclipse\footnote{\url{http://www.eclipse.org}} or the Android Studio\footnote{\url{http://developer.android.com/sdk/installing/studio.html}} based on IntelliJ IDEA. 
-The Android SDK contains an Eclipse plugin supporting Android developement, documentation, sample code, and various tools, such as Android Debug Bridge used by the programmer to communicate with an application running on a device. 
+The Android SDK contains an Eclipse plugin supporting Android developement, documentation, sample code, and various tools, such as the Android Debug Bridge used by the programmer to communicate with an application running on a device. 
 % % \item The Android SDK is provided as \@.zip file including Java archive file containing all necessary classes to build an application (android\@.jar),
 % the SDK documentation, a directory with sample code, Android Debug Bridge and other tools needed to build an application.
 
@@ -65,59 +64,45 @@ The Android SDK contains an Eclipse plugin supporting Android developement, docu
 
 \section{Application components}
 
-When an application is installed to a device, it lives within its security sandbox.
-Android offers a secure environment where the applications are isolated and can safely run their code.
-To each application the Linux system assigns a user ID number. 
-Android is a multi-user operating system, meaning that each application corresponds to a different user with a different ID.
-This number is known only to the system that sets permissions to all files so they cannot be accessed by any other applications.
-Each application runs in a unique Linux process initiated when the application or any of its components need to be executed.
-When the system needs to recover the memory or the application is not used for some time, the process shuts down.
-Releasing memory is governed by the ``oldest first`` principle -- the system starts by killing the apps that were inactive for the longest time.
+Compared to the situation on the majority of conventional platforms, Android interacts with the running applications in a much closer manner. 
+Actually, the system expects a certain very specific architectural structure of the application expressed using concepts from object oriented programming. 
+A typical Android application can be decomposed into several classes, each being a descendant a particular class provided by the SDK. 
+Through this, requirements on what and how the application's class has to implement are imposed. 
+This approach allows, e.g., sophisticated interaction between different aplications running on the same phone. 
+For example, one application can use a list of contacts maintained by another application without the developers of the latter having to set up any protocols or data exports -- they only need to obey the software developement principles of the platform. % XXX zkontrolovat, jestli je tohle pravda
+Furthermore, the user data are protected from an unauthorized access through the principle of least priviledge. 
+In the above-mentioned example, the access to the list of contacts would not be granted unless it is listed in the accessing application's manifest file and this requirement has been authorized by the user. 
+Since these properties of the platform are rather unique, we devote this section to discuss them. 
 
-The security is driven by the principle of least privilege and the application is allowed access only to the resources specified in the manifest file. 
-This protects the whole Android system and the applications from each other.
-
-A typical application is built from several components. 
-These basic building blocks can be divided into four different groups:
+An Android application is built from several components typically belonging to one of the following groups: 
 \begin{itemize}
 \item{activities,}
 \item{services,}
 \item{content providers,}
-\item{broadcast receivers.}
+\item{etc.}
 \end{itemize}
 
-\emph{An activity} is can be thought of as a UI screen providing elements such as views, lists, buttons, labels, etc. along with the implementation of their functionality.
-The layout of an activity and the widgets placed in the window is described in a separate XML file (we reveal more about user interface later) \todo{Tu zavorku rozhodne nahradme odkazem na sekci}
-Most applications consist of more than one activity.
+\term{An activity} can be thought of as a UI screen providing elements such as views, lists, buttons, labels, etc. along with the implementation of their functionality.
+The layout of an activity and the widgets placed in the window is described in a separate XML file. 
+Most applications consist of more than one activity with one being designated as the main one.
 Although the activities form one application, they are all independent from each other.
 If another application has a permission to do so, it can start an activity of a different app.
+From the developer's perspective, activities are represented by classes descending from the Activity class defined in the SDK. 
 
-Usually in a application there is a one main activity that shows up to the user at first after launching it.
-To this one are all other activities linked.
-Each activity in android will be subclass of Activity class defined in Android SDK.
+\term{A service} is a component used to perform operations in the background.
+For example, if the application needs to run a long-term computation, the user can switch to another application with the computation continues. 
 
-A \emph{service} is a component used to perform operations in background.
-It can be invoked by an activity for example.
-If the application needs to run long-term process, user can switch to another application and our process can continue to run in background.
-This can be exploited to develop an application to play music or an application which needs to fetch data in the background.
+\term{A content provider} manages sharing data across applications.
+When the app is storing data, for example in the file system or an SQLite database, the content provider interface can be used to access or even modify the data from other applications. 
 
-A \emph{content provider} manages sharing data across the applications.
-When the app is storing any data - in file system, SQLite database or any online storage, through the content provider they can be accessed or even modified from other applications.
-An example when a content provider is used is an application working with the contacts database.
+The platform utilizes additional classes of components besides the above-mentioned ones (e.g., broadcast recievers). 
+However, we omitt them for the sake of brevity. 
+The reader is refferred to the Android SDK documentation for more information about activities. 
 
-A \emph{broadcast receiver} is a component broadcasted by the Android system.
-It usually inform applications about some basic actions such as turning the screen off, running out of battery or changes of timezone.
-Applications can also initiate broadcasts to let other apps know about some action, that there some data ready to use or about completed downloading for example.
-%A broadcast receiver is implemented as a subclass of an abstract class BroadcastReceiver.
-
-From these mentioned components, activities, services and broadcasts are activated by intents.
+%%% docteno sem 
+The interaction between various components and activities is faciliated by \term{intents.} 
 An intent is a message to the system to invoke new activity, service or a broadcast.
 It is a component activating mechanism in Android.
-
-A very important part of an application is AndroidManifest\@.xml file, where are specified all permissions of the application.
-Each activity we create must be defined in it. Basically, every component that is used in the application must be declared in the manifest.
-%code example
-
 
 \section{The Activity Lifecycle}
 \label{sec:lifecycle}
