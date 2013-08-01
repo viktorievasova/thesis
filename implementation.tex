@@ -89,17 +89,6 @@ For the calculation of the depth information we need to extract more correspondi
 Assuming the difference of images is limited, we use for this purpose optical flow algorithm. 
 For each SURF keypoint in the first image we detect corners or other features acceptable for the tracking algorithm in its 70 $\times$ 70 pixels area.
 
-\begin{figure}[h]
-\centerline{
-\includegraphics[width=4.0cm]{img/trackingpoints1.png}
-\includegraphics[width=4.0cm]{img/trackingpoints2.png}}
-\centerline{
-\includegraphics[width=4.0cm]{img/trackingpoints1_filtered.png}
-\includegraphics[width=4.0cm]{img/trackingpoints2_filtered.png}}
-\caption{70 $\times$ 70 windows of the pair of the input images with optical flow matches.
- In the first line all the detected correspondences are shown, in the second line are only those which were accepted after filtering.}
-\label{fig:trackingpoints}
-\end{figure}
 
 Calculating the optical flow we get the corresponding points in the second image.
 With high probability some of the results will be influenced by noise.
@@ -111,18 +100,4 @@ Every keypoint is represented as a triangle in a space with the depth calculated
 At first, the user can view the rough model created from the results of SURF matching.
 Each time some of the dense corresponding points are calculated with optical flow algorithm, the model is updated.
 
-\begin{figure}[h]
-\centerline{
-\includegraphics[width=4.0cm]{img/rectangle_w_02_h_035_croped.png}
-\includegraphics[width=12.1cm]{img/matching_w_02_h_035.png}}
-\centerline{
-\includegraphics[width=4.0cm]{img/rectangle_w_01__h_02_croped.png}
-\includegraphics[width=12.1cm]{img/matching_w_01_h_02.png}}
-\caption{Comparison of the result of matching with different sizes of the oriented rectangles. 
-At the top left is a sample of the oriented rectangle where the width of inner rectangle is 20\% and height is 35\% of the size of the large one. 
-Next to it is the result of matching the SURF keypoints where for each keypoint in the first image is estimated this rectangle for the detection of the corresponding point in the second image.
-Below is the result of same matching with smaller rectangular area -- the width of the inner rectangle is reduced to 10\% and hight to 20\% of the size of the large one. 
-We can see that in the second case there is less mismatches than in the first one.}
-\label{fig:matching_comparison}
-\end{figure}
 
