@@ -1,21 +1,21 @@
 \chapter{Implementation}
 \label{chap:implementation}
 
-This chapter is devoted to implementation of our software.
-The result of this work is an Android application that allows to shoot pictures with a camera, browse them and pick photos for further processing.
-The output is a 3D model representing the disparity map which was calculated on the base on the selected input data.
-
-Our task was to find the way of implementing a problem of image processing on the Android platform.
-When implementing the software for Android we are limited to the input data of lower quality.
-The Android camera lenses are made of plastic and causes a non-linear distortion.
-Also, due to the limited capacity of Android calculation memory we need to down-sample the resolution of the input images.
-In this implementation the expected size of an image is approximately 800 $\times$ 1000 pixels.
-These problems avoid using common approaches of solving the dens corresponding problem.
+This chapter is devoted to the implementation of our software.
+The result of this work is an Android application that allows to take photos with a camera, browse them and pick a pair of images for the resulting 3D model of the disparity map which was calculated from the selected input data.
 The expected input data are described in Section \ref{prob}.
-%In the first section of this chapter we enumerate the subtasks and chosen algorithms and then describe the structure of the software resources.
+
+Our task was to design an algorithm solving the problem of calculation the depth information from a pair of images on the Android platform.
+When implementing the software for Android we are limited to the input data of lower quality.
+The Android camera lenses are made of plastic and cause a significant non-linear distortion which can not be easily simulated.
+Also, due to the limited capacity of calculation memory of mobile phones we need to down-sample the resolution of the input images.
+These problems disallow using common approaches of solving the dens corresponding problem.
+
+In Section \ref{sec:impl_outline} of this chapter we enumerate the subtasks and describe how was our approach designed.
  
 \section{Implementation outline}
-In the first section of this chapter we describe the way how was the task solved, what algorithms were chosen and how was the application implemented.
+\label{sec:impl_outline}
+In the this section we describe the way how was the task solved, what algorithms were chosen and how was the application implemented.
 %To implement the Android application, several subtask must be completed.
 %At first it is the graphical user interface and handling the camera which is managed through Android Activities and xml files as we described in chapter \ref{chap:android}.
 %Secondly, we deal with the calculation, which consist of the image registration, the keypoint detection, the keypoint matching and solving the dense correspondence problem.
@@ -125,14 +125,4 @@ Below is the result of same matching with smaller rectangular area -- the width 
 We can see that in the second case there is less mismatches than in the first one.}
 \label{fig:matching_comparison}
 \end{figure}
-
-%\section{Project structure}
-%The project resources can be divided into four parts:
-%\begin{itemize}
-%\item{Activities, }
-%\item{Classes, }
-%\item{Structures, }
-%\item{xml files defining layout and other files in the /res folder.}
-%\end{itemize}
-
 
