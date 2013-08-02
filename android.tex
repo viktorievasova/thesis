@@ -69,7 +69,7 @@ Actually, the system expects a certain specific architectural structure of the a
 A typical Android application is be decomposed into several classes, each being a descendant of a particular class provided by the SDK. 
 Through this, requirements on what and how the application's class has to implement are imposed. 
 This approach allows, e.g., sophisticated interaction between different applications running on the same phone. 
-For example, one application can use a list of contacts maintained by another application without the developers of the latter having to set up any protocols or data exports -- they only need to obey the software developement principles of the platform. % XXX zkontrolovat, jestli je tohle pravda
+For example, one application can use a list of contacts maintained by another application without the developers of the latter having to set up any protocols or data exports -- they only need to obey the software development principles of the platform. 
 Thanks to this, the user data are seamlessly protected from an unauthorised access by the system through the principle of least privilege. 
 In the above-mentioned example, the access to the list of contacts would not be granted unless it is listed in the accessing application's manifest file and this requirement has been authorized by the user. 
 Since these properties of the platform are rather unique, we devote this section to discuss them. 
@@ -122,7 +122,7 @@ There are five stages of the life of an application:
 \end{itemize}
 
 The starting state and the destroyed state are phases of the activity when it is not in the memory.
-To launch the app, the main activity class's \emph{onCreate()} method is called and eventually the application transitions into the running state. % XXX overit, jestli ije pravda
+To launch the app, the main activity class's \emph{onCreate()} method is called and eventually the application transitions into the running state.
 When in a running state, the application is actually on the screen visible to the user and handling all user interactions such as typing or touching the screen. 
 An activity in this state has the highest priority for memory allocation in the activity stack.
 It is killed by the operating system only in extreme situations.
@@ -151,20 +151,20 @@ Although not recommended, the user interface can be also declared explicitly in 
 There are two principal layouting options: \term{LinearLayout} arranges the inner elements in a single row or a column,
 while \term{RelativeLayout} positions the elements in relation to their parent or each other.
 
-With the layout defined, the developer can then utilize the UI elements offered by the SDK, such as \term{menus}, \term{action bars}, \term{dialogs} or \term{toasts}.
-There are several types of \term{menus} such as \term{options menu} or \term{context menu}. % XXX velky nebo maly pismena? 
-The \term{options menu} displays a collection of buttons when the user taps the menu button typically available on an Android device. 
-From the Android version 3\@.0 higher, the options menu items are included in the action bar after touching the action overflow button. % XXX co jsou ty veci? 
-The \term{context menu} is a floating menu associated with a particular element in a view displayed after touching the element.
+With the layout defined, the developer can then utilize the UI elements offered by the SDK, such as menus, action bars, \term{dialogs} or toasts.
+There are several types of menus such as options menu or context menu. 
+The options menu displays a collection of buttons when the user taps the menu button typically available on an Android device. 
+From the Android version 3\@.0 higher, the options menu items are included in the action bar after touching the action overflow button. 
+The context menu is a floating menu associated with a particular element in a view displayed after touching the element.
 
-Action bars provide a way for navigating through the application's interface. % XXX sjednotit, 
+Action bars provide a way for navigating through the application's interface. 
 The action bar is located at the top of an activity and can display the activity title, icon or other actions and items.
-Some Android devices have a hardware action overflow button which opens the \term{options menu} at the bottom of an activity. % XXX je to tedy na vec nahore nebo dole? 
-\term{Action Bars} are superior to the \term{options menus} since an \term{Action Bar} is always visible while \term{options menu} shows only on the user request.
+Some Android devices have a hardware action overflow button which opens the \term{options menu} at the bottom of an activity. 
+\term{Action Bars} are superior to the \term{options menus} since an \term{action bar} is always visible while \term{options menu} shows only on the user request.
 
 A \term{Dialog} is a small window informing the user about some action. 
 Unlike \term{Toast} it usually requires the users action before continuing by confirmation or giving some additional information.
-The \term{Toast} provides only feedback about some action in a small popup that disappears after a moment.
+The \term{Toast} provides only feedback about some action in a small pop-up that disappears after a moment.
 
 \section{Sensors}
 

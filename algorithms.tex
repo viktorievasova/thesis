@@ -14,7 +14,8 @@ In the latter, the objective is to obtain a correspondence in the second image f
 % We can either aim to establish correspondences between a restricted set of primitives, for example just the most stable looking corners detected in the images, or we can aim to establish a correspondence from (almost) every pixel of the reference image. 
 % The former approach is called \term{sparse correspondence problem} 
 
-We describe two techniques solving the sparse correspondence problem -- the SIFT \cite{lowe1999} and SURF \cite{surf2006} feature detectors/descriptors -- and then consider the Lucas-Kanade method for computing optical flow. % XXX ten optical flow je nuten do toho zasadit nejak vic 
+We describe two techniques solving the sparse correspondence problem -- the SIFT \cite{lowe1999} and SURF \cite{surf2006} feature detectors/descriptors. 
+Then, we consider the Lucas-Kanade method for computing optical flow, which allows one to track correspondences in cases of very limited visual differences between the images.
 
 % We describe three techniques -- the SIFT feature detector/descriptor, the SURF feature detector/descriptor, and the Graph-cut algorithm. \todo{potrebujeme urcite pridat citace}
 % SIFT and SURF are the most used algorithms to detect features.
