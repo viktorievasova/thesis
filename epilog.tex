@@ -2,36 +2,23 @@
 \addcontentsline{toc}{chapter}{Conclusion and future work}
 
 We have described and implemented a mobile application for 3D reconstruction from images. 
-The application has been tested on a Sony ST27i mobile device with 1 Ghz Cortex-A9 processor, on which it is able to reconstruct a scene in a manner of several seconds. 
-Moreover, thanks to the asynchronous implementation of the reconstruction and visualization, the application continues to refine the reconstruction while the user is viewing the result.
+The application has been tested on a Sony ST27i mobile device with a 5 megapixel camera and 1 Ghz Cortex-A9 processor, on which it is able to reconstruct a scene in a manner of several seconds. 
+Moreover, thanks to the asynchronous implementation of the reconstruction and visualization threads, the application continues to refine the reconstruction while the user is viewing the result.
+Another advantage of our approach is the relative independence on camera quality. 
+In particular, the application does not depend on any algorithm that would require a precise camera calibration data. 
+Although it would theoretically be possible to obtain a part of the internal calibration of the phone's camera, it would likely require the user to calibrate the camera using, for example, a chessboard calibration pattern -- something not all users would have the patience for. 
+Therefore, this property is highly desirable. 
 
 The application has been tested on input samples from Figure \ref{fig:input_samples}, where we have obtained satisfiable results as discussed in Chapter \ref{chap:eval}.
 However, our implementation fails and does not give good results on noisy images or on images with not enough texture. 
-In such a kind of scenes the features are matched incorrectly or not even detected.
-Another problem of the application is the behavior when the photos of the scene differ in illumination, since the algorithm registering the two images using the sum of absolute differences does not correct for this.
+In such kinds of scenes, the features are matched incorrectly or not even detected.
+Another issue is the behavior when the photos of the scene differ in illumination, since the algorithm registering the two images using the sum of absolute differences does not correct for this.
 In these cases, it is likely that the photos will be registered incorrectly which affects all the other algorithms in our reconstruction pipeline. 
-This 
+This could be fixed by using an appropriate metric, for example mutual information, which is invariant to global  color transformations. 
 
-\section*{Future work}
-
-While we use a sum of absolute differences to detect the initial relative position, our approach fails on pairs of images with varying illumination.
-Also it does not give good results on the images influenced by noise, which is quite common on the images taken by mobile phone camera, 
-especially when the lightening conditions are not ideal.
-This can be solved by obtaining the information of relative position by using mutual information while the mutual information is independent to the information of illuminance.
-
-Current version of our program detects the  depth information from a pair of images.
-Our implementation could be also extended to the input of $n$ photos. 
+Our implementation could be also extended to be able to process $n$ photos of a single scene at once. 
 It would be necessary to find the relative position of all pairs of images.
-This does not have to be calculated explicitly, but possibly we could estimate the position of two images when having the information about their position with the third image.
-Detection and matching of SURF keypoints would be applied only to the pairs with an overlapping part.
-Most of the implemented methods were designed to be easily extended for this purpose.
-
-For a simple usage of the application we tried to implement an auto-capturing option for taking pictures.
-However, we have not managed to optimalize it's behaviour, because it was not the main goal of this work. 
-Therefore, it could be an option how to extend the application.
-If we go even further, this way of using the device's equipment such an accelerometer can be used to estimate the relative position of taken pictures detected from the motion of the device.
-We should note that we can not rely on any interaction with the user to calibrate the camera, since the the mobile phone lens causes a non-linear distortion of the image and non-linear distortion can not be modeled.
-
-
-
+This does not have to be calculated explicitly, but we could estimate the position of two images when having the information about their relative position with respect to a third image.
+Detection and matching of the SURF features would be applied only to the pairs with an overlapping part.
+Most of the implemented methods can be easily extended for this purpose.
 
